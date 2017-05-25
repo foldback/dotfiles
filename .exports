@@ -1,30 +1,66 @@
-#!/usr/bin/env bash
+# macOS
+# .exports
 
-# Make vim the default editor.
-export EDITOR='vim';
+# Make Vim the default editor for local and remote sessions.
+if [ -n "${SSH_CONNECTION}" ]; then
+  export EDITOR="vim"
+else
+  export EDITOR="vim"
+fi
 
 # Enable persistent REPL history for `node`.
-export NODE_REPL_HISTORY=~/.node_history;
+export NODE_REPL_HISTORY="${HOME}/.node_history"
 # Allow 32³ entries; the default is 1000.
-export NODE_REPL_HISTORY_SIZE='32768';
+export NODE_REPL_HISTORY_SIZE="32768"
 # Use sloppy mode by default, matching web browsers.
-export NODE_REPL_MODE='sloppy';
+export NODE_REPL_MODE="sloppy"
 
 # Make Python use UTF-8 encoding for output to stdin, stdout, and stderr.
-export PYTHONIOENCODING='UTF-8';
+export PYTHONIOENCODING="UTF-8"
 
+# Bash history settings
 # Increase Bash history size. Allow 32³ entries; the default is 500.
-export HISTSIZE='32768';
-export HISTFILESIZE="${HISTSIZE}";
+export HISTSIZE="32768"
+export HISTFILESIZE="${HISTSIZE}"
 # Omit duplicates and commands that begin with a space from history.
-export HISTCONTROL='ignoreboth';
+export HISTCONTROL="ignoreboth"
+
+# Zsh history settings
+# Filename for history file
+export HISTFILE="${HOME}/.zhistory"
+# Allow 32³ entries 
+export HISTSIZE="32768"
+# Save history after logout
+export SAVEHIST="32768"
+# Append into history file
+setopt INC_APPEND_HISTORY
+# Save only one command if two are the same and consistent
+setopt HIST_IGNORE_DUPS
+# Add timestamp for each entry
+setopt EXTENDED_HISTORY
 
 # Prefer US English and use UTF-8.
-export LANG='en_US.UTF-8';
-export LC_ALL='en_US.UTF-8';
+export LANG="en_US.UTF-8"
+export LC_ALL="en_US.UTF-8"
 
 # Highlight section titles in manual pages.
-export LESS_TERMCAP_md="${yellow}";
+export LESS_TERMCAP_md="${YELLOW}"
 
 # Don’t clear the screen after quitting a manual page.
-export MANPAGER='less -X';
+export MANPAGER="less -X"
+
+# Path and manpages
+# Enable $DOTFILES binaries
+export PATH="${HOME}/dotfiles/bin:${PATH}"
+# User manpages
+export MANPATH="/usr/local/man:${MANPATH}"
+
+# Optimize color output of macOS `ls`
+colorflag="-G"
+export LSCOLORS=gxfxbEaEBxxEhEhBaDaCaD
+
+# SSH keys
+export SSH_KEY_PATH="${HOME}/.ssh/rsa_id"
+
+# Set GPG env variable
+export GPG_TTY=$(tty)
