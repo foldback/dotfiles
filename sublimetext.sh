@@ -1,0 +1,29 @@
+# macOS
+# sublimetext.sh
+# Symlinks Sublime Text user settings into place
+
+# Open Sublime Text to create User directory
+open -a "Sublime Text" && osascript -e 'quit app "Sublime Text"' && sleep 5
+
+# Lazy
+SUBLIME="${HOME}/Library/Application Support/Sublime Text 3"
+
+# Remove old User directory
+rm -Rf "${SUBLIME}/Packages/User"
+# Symlink User directory
+ln -sF "${HOME}/dotfiles/.sublimetext/User" "${SUBLIME}/Packages/User"
+
+# Install latest Package Control
+mkdir "${SUBLIME}/Installed Packages"
+curl -o "${SUBLIME}/Installed Packages/Package Control.sublime-package"\
+ "https://packagecontrol.io/Package%20Control.sublime-package"
+
+unset SUBLIME
+
+# Use a more modern icon
+npm install -g fileicon
+fileicon rm '/Applications/Sublime Text.app'
+fileicon set '/Applications/Sublime Text.app' resources/sublimetext.icns
+npm uninstall -g fileicon
+
+echo "Sublime Text configured!"
