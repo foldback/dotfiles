@@ -129,7 +129,7 @@
 
 [commit]
 	# https://help.github.com/articles/signing-commits-using-gpg/
-	gpgsign = true
+	gpgsign = false
 
 [gpg]
 	# Point git to correct gpg binary
@@ -186,6 +186,6 @@
 	insteadOf = bb:
 
 [user]
-	name = Jorrit Visser
-	email = jorritjanvisser@gmail.com
-	signingkey = F19961FA392B97A68B50770D53E37A7EA1CB82A7
+	name =
+	email =
+	signingkey =
