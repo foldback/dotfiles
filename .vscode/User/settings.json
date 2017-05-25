@@ -1,0 +1,51 @@
+{
+    "editor.fontFamily": "SourceCodePro-Regular, Menlo, Monaco, 'Courier New', monospace",
+    "editor.fontSize": 15,
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": true,
+    "editor.minimap.enabled": false,
+    "editor.minimap.renderCharacters": false,
+    "editor.scrollBeyondLastLine": false,
+    "editor.emptySelectionClipboard": false,
+    "editor.cursorBlinking": "solid",
+    "editor.cursorStyle": "line",
+    "editor.renderWhitespace": "boundary",
+    "editor.renderIndentGuides": true,
+    "editor.renderLineHighlight": "all",
+    "diffEditor.ignoreTrimWhitespace": false,
+    "window.title": "${rootPath}${separator}${activeEditorShort}${dirty}",
+    "workbench.iconTheme": "vs-seti",
+    "workbench.tips.enabled": false,
+    "workbench.editor.closeOnFileDelete": false,
+    "workbench.colorTheme": "Charcoal Oceanic Next",
+    "files.insertFinalNewline": true,
+    "vim.easymotion": true,
+    "vim.incsearch": true,
+    "vim.useSystemClipboard": true,
+    "vim.useCtrlKeys": true,
+    "vim.hlsearch": true,
+    "vim.insertModeKeyBindings": [
+        {
+            "before": ["k","j"],
+            "after": ["<Esc>"]
+        }
+    ],
+    "vim.otherModesKeyBindingsNonRecursive": [
+        {
+            "before": ["<leader>","d"],
+            "after": ["d", "d"]
+        },
+        {
+            "before":["<leader>", "n"],
+            "after":[],
+            "commands": [
+                {
+                    "command": ":nohl"
+                }
+            ]
+        }
+    ],
+    "vim.leader": ","
+}
+
