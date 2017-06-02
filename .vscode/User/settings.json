@@ -13,6 +13,8 @@
     "editor.renderWhitespace": "boundary",
     "editor.renderIndentGuides": true,
     "editor.renderLineHighlight": "all",
+    "editor.trimAutoWhitespace": true,
+    "files.trimTrailingWhitespace": true,
     "diffEditor.ignoreTrimWhitespace": false,
     "window.title": "${rootPath}${separator}${activeEditorShort}${dirty}",
     "workbench.iconTheme": "vs-seti",
@@ -46,6 +48,7 @@
             ]
         }
     ],
-    "vim.leader": ","
+    "vim.leader": ",",
+    "vim.disableAnnoyingNeovimMessage": true
 }
 
