@@ -175,3 +175,6 @@ alias reload="exec $SHELL -l"
 
 # Print each PATH entry on a separate line
 alias path='echo -e ${PATH//:/\\n}'
+
+# Empty trash, flush DNS, clean `open with..`, remove all `.DS_Store`, update everything
+alias consuela="emptytrash &; flushdns &; lscleanup &; ds_clean &; update &;" 1>/dev/null
