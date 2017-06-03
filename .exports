@@ -18,26 +18,36 @@ export NODE_REPL_MODE="sloppy"
 # Make Python use UTF-8 encoding for output to stdin, stdout, and stderr.
 export PYTHONIOENCODING="UTF-8"
 
-# Bash history settings
-# Increase Bash history size. Allow 32³ entries; the default is 500.
-export HISTSIZE="32768"
-export HISTFILESIZE="${HISTSIZE}"
-# Omit duplicates and commands that begin with a space from history.
-export HISTCONTROL="ignoreboth"
-
-# Zsh history settings
+# Shell history settings
+# By doing this `bash` and `zsh` share their history
 # Filename for history file
-export HISTFILE="${HOME}/.zhistory"
-# Allow 32³ entries 
+export HISTFILE="${HOME}/.shellhistory"
+# Allow 32³ entries in history `buffer`
 export HISTSIZE="32768"
-# Save history after logout
-export SAVEHIST="32768"
-# Append into history file
-setopt INC_APPEND_HISTORY
-# Save only one command if two are the same and consistent
-setopt HIST_IGNORE_DUPS
-# Add timestamp for each entry
-setopt EXTENDED_HISTORY
+# `bash` history settings
+if [ -n "$BASH_VERSION" ]; then
+  # Allow 32³ entries in history file
+  export HISTFILESIZE="${HISTSIZE}"
+  # Append instead of overwrite history file
+  shopt -s histappend
+  # Omit duplicates and commands that begin with a space from history
+  export HISTCONTROL="ignoreboth:erasedups"
+# `zsh` history settings
+elif [ -n "$ZSH_VERSION" ]; then
+  # # Allow 32³ entries in history file
+  export SAVEHIST="32768"
+  # Append into history file incrementally instead of write-on-exit
+  setopt SHARE_HISTORY
+  # Omit duplicates from history
+  setopt HIST_IGNORE_DUPS
+  # Omit commands that begin with a space from history
+  setopt HIST_IGNORE_SPACE
+  # Add timestamp for each entry
+  # Disabled because of shared history file with bash
+  #setopt EXTENDED_HISTORY
+else
+  : # do nothing
+fi;
 
 # Prefer US English and use UTF-8.
 export LANG="en_US.UTF-8"
