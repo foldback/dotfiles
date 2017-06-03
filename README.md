@@ -9,7 +9,7 @@ If you feel the need to run one of the scripts seperately, go ahead. I've made s
 
 ## Installation
 
-git clone "https://github.com/jorvi/dotfiles.git" "~/dotfiles" && git checkout "mac" && "~/dotfiles/setup.sh"
+git clone "https://github.com/jorvi/dotfiles.git" "\~/dotfiles" && git checkout "mac" && "\~/dotfiles/setup.sh"
 
 If you want to use these dotfiles, you should first fork the repository, review the code, and remove things you don’t need or want. Don’t use these unless you know what they do. Use at your own risk!
 

@@ -212,7 +212,7 @@ treez() {
 # Get bundle name of an application
 # `bundleid "Keychain Access"`
 bundleid() {
-  if [ "$(find "/Applications/" -maxdepth 5 -name "${@}" -print -quit)" ] || [ "$(find "/System/Library/CoreServices/" -maxdepth 2 -name "${@}.app" -print -quit)" ]; then
+  if [ "$(find "/Applications" -maxdepth 3 -name "${@}" -print -quit)" ] || [ "$(find "/System/Library/CoreServices" -maxdepth 2 -name "${@}.app" -print -quit)" ]; then
     osascript \
       -e 'on run(argv)' \
         -e 'id of application (item 1 of argv)' \

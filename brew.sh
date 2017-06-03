@@ -2,19 +2,17 @@
 # brew.sh
 # installs Homebrew package manager & packages
 
-# Ask for the administrator password upfront if needed
-if [ ! "${UID}" = 0 ]; then
-  sudo -v
+# Install Homebrew if not yet installed
+if [ ! "$(which -s brew)" = 0 ]; then
+  # Ask for the administrator password upfront if needed
+  if [ ! "${UID}" = 0 ]; then
+    sudo -v
+  fi;
+  # Installation
+  ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 fi;
 
-# Keep-alive: update existing 'sudo' time stamp until script has finished
-while true;do sudo -n true;sleep 60;kill -0 "$$" || exit;done 2>/dev/null &
-
-# Install Homebrew
-/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/\
-install/master/install)"
-
-# Disable Homebrew (Google-powered) analytics
+# Turn off Homebrew analytics
 #brew analytics off
 
 # Make sure we’re using the latest Homebrew.
@@ -24,51 +22,48 @@ brew update
 brew upgrade
 
 # Binaries
-# Install Brew packages
-brew install \
-  # ADB and Fastboot
-  android-platform-tools \
-  # with unicode URL support
-  wget --with-iri \
-  # GPG and keychain bridge
-  gnupg \
-  pinentry-mac
+brew install\
+   android-platform-tools\
+   wget --with-iri
+
+# GPG
+brew install\
+   gnupg\
+   pinentry-mac
 
 # Update macOS CLI utilities
-brew install \
-  # Vim 8.0 for async support
-  vim --with-override-system-vi
+brew install\
+   vim --with-override-system-vi
 
 # Install up-to-date language frameworks
-brew install \
-  npm \
-  perl \
-  python \
-  python3 \
-  ruby
+brew install\
+   npm\
+   perl\
+   python\
+   python3\
+   ruby
 
 # Apps
 # Tap apps
 brew tap caskroom/cask
 # Install apps
-brew cask install \
-  1password \
-  airparrot \
-  calibre \
-  dropbox \
-  etcher \
-  fork \
-  google-chrome \
-  iterm2 \
-  spectacle \
-  spotify \
-  sublime-text \
-  the-unarchiver \
-  transmission \
-  viscosity \
-  vlc \
-  visual-studio-code \
-  whatsapp
+brew cask install\
+   1password\
+   airparrot\
+   calibre\
+   dropbox\
+   etcher\
+   fork\
+   google-chrome\
+   iterm2\
+   spectacle\
+   spotify\
+   the-unarchiver\
+   transmission\
+   viscosity\
+   vlc\
+   visual-studio-code\
+   whatsapp
 echo "macOS apps installed!"
 
 # Tap fonts

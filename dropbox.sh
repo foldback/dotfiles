@@ -32,27 +32,27 @@ unset SIZE_B
 
 # Keep `Documents` backed up
 # Copy Dropbox directory to local directory
-cp -Rn "${DROPBOX}/Documents/" "${HOME}/"
+cp -Rn "${DROPBOX}/Documents" "${HOME}"
 # Delete pre-existing directory because it can't be overwritten
-rm -Rf "${DROPBOX}/Documents/"
+rm -Rf "${DROPBOX}/Documents"
 # Symlink Dropbox-cloned local directory back into Dropbox
-ln -sF "${HOME}/Documents/" "${DROPBOX}/Documents/"
+ln -sF "${HOME}/Documents" "${DROPBOX}/Pictures"
 
 # Keep `Pictures` backed up
 # Move `Photo library` to $HOME. Otherwise battery = kill
-mv -i "${HOME}/Pictures/Photos Library.photoslibrary" \
-"${HOME}/Photos Library.photoslibrary"
+mv -i "${HOME}/Pictures/Photos Library.photoslibrary"\
+ "${HOME}/Photos Library.photoslibrary"
 # Copy Dropbox directory to local directory
-cp -Rn "${DROPBOX}/Pictures/" "${HOME}/"
+cp -Rn "${DROPBOX}/Pictures" "${HOME}"
 # Delete pre-existing directory because it can't be overwritten
-rm -Rf "${DROPBOX}/Pictures/"
+rm -Rf "${DROPBOX}/Pictures"
 # Symlink Dropbox-cloned local directory back into Dropbox
-ln -sF "${HOME}/Pictures/" "${DROPBOX}/Pictures/"
+ln -sF "${HOME}/Pictures" "${DROPBOX}/Pictures"
 
 # Create Calibre symlink so the default Calibre setup works
-cp -Rn "${DROPBOX}/eBooks/" "${HOME}/Calibre Library/"
-rm -Rf "${DROPBOX}/eBooks/"
-ln -sF "${HOME}/Calibre Library/" "${DROPBOX}/eBooks/"
+cp -Rn "${DROPBOX}/eBooks" "${HOME}/Calibre Library"
+rm -Rf "${DROPBOX}/eBooks"
+ln -sF "${HOME}/Calibre Library" "${DROPBOX}/eBooks"
 
 # Create `.extra` symlink to apply private settings
 cp -n "${DROPBOX}/dev/dotfiles/.extra" "${HOME}/.extra"
@@ -60,23 +60,23 @@ rm -f "${DROPBOX}/dev/dotfiles/.extra"
 ln -sf "${HOME}/.extra" "${DROPBOX}/dev/dotfiles/.extra"
 
 # Symlink SSH keys
-cp -Rn "${DROPBOX}/dev/dotfiles/.ssh/" "${HOME}/"
-rm -Rf "${DROPBOX}/dev/dotfiles/.ssh/"
-chown -R $(id un) "${HOME}/.ssh/"
-chmod 700 "${HOME}/.ssh/"
+cp -Rn "${DROPBOX}/dev/dotfiles/.ssh" "${HOME}"
+rm -Rf "${DROPBOX}/dev/dotfiles/.ssh"
+chown -R $(id un) "${HOME}/.ssh"
+chmod 700 "${HOME}/.ssh"
 chmod 600 "${HOME}/.ssh/id_rsa"
 chmod 644 "${HOME}/.ssh/id_rsa.pub"
-ln -sF "${HOME}/.ssh/" "${DROPBOX}/dev/dotfiles/.ssh/"
+ln -sF "${HOME}/.ssh" "${DROPBOX}/dev/dotfiles/.ssh"
 
 # Symlink GPG keys
 # https://superuser.com/a/954536
-cp -Rn "${DROPBOX}/dev/dotfiles/.gnupg/" "${HOME}/"
-rm -Rf "${DROPBOX}/dev/dotfiles/.gnupg/"
-chown -R $(id -un) "${HOME}/.gnupg/"
+cp -Rn "${DROPBOX}/dev/dotfiles/.gnupg" "${HOME}"
+rm -Rf "${DROPBOX}/dev/dotfiles/.gnupg"
+chown -R $(id -un) "${HOME}/.gnupg"
 chmod 600 "${HOME}/.gnupg/"*
 chmod 700 "${HOME}/.gnupg/private-keys-v1.d/"
-ln -sF "${HOME}/.gnupg/" "${DROPBOX}/dev/dotfiles/.gnupg/"
+ln -sF "${HOME}/.gnupg" "${DROPBOX}/dev/dotfiles/.gnupg"
 
-unset Dropbox
+unset DROPBOX
 
 echo "Dropbox folders symlinked!"

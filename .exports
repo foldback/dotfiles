@@ -62,7 +62,7 @@ export LSCOLORS=gxfxbEaEBxxEhEhBaDaCaD
 # SSH keys
 export SSH_KEY_PATH="${HOME}/.ssh/rsa_id"
 
-# Set GPG env variable
+# Set GPG env variable to allow apps use of GPG
 export GPG_TTY=$(tty)
 
 # Homebrew options
