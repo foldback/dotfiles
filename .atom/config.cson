@@ -1,0 +1,27 @@
+"*":
+  "atom-material-ui":
+    colors: {}
+    fonts:
+      fontSize: 15
+    tabs:
+      compactTabs: true
+    ui:
+      panelContrast: true
+  core:
+    projectHome: "/Users/jvisser/projects"
+    telemetryConsent: "limited"
+    themes: [
+      "one-dark-ui"
+      "oceanic-next"
+    ]
+    titleBar: "custom"
+  editor:
+    fontFamily: "SourceCodePro-Regular"
+    fontSize: 15
+    invisibles: {}
+    showIndentGuide: true
+    showInvisibles: true
+  "exception-reporting":
+    userId: "136080b8-19f7-4316-a52a-91d916e9ab94"
+  welcome:
+    showOnStartup: false
