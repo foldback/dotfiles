@@ -8,15 +8,15 @@
     "shortcut_name" : "MakeSmaller"
   },
   {
-    "shortcut_key_binding" : "ctrl+alt+u",
-    "shortcut_name" : "MoveToUpperLeft"
+    "shortcut_key_binding" : "ctrl+alt+\\",
+    "shortcut_name" : "MoveToLowerRight"
   },
   {
-    "shortcut_key_binding" : "ctrl+alt+i",
+    "shortcut_key_binding" : "ctrl+alt+]",
     "shortcut_name" : "MoveToUpperRight"
   },
   {
-    "shortcut_key_binding" : "ctrl+alt+down",
+    "shortcut_key_binding" : "ctrl+alt+j",
     "shortcut_name" : "MoveToBottomHalf"
   },
   {
@@ -24,11 +24,11 @@
     "shortcut_name" : "MoveToNextDisplay"
   },
   {
-    "shortcut_key_binding" : "ctrl+alt+up",
+    "shortcut_key_binding" : "ctrl+alt+k",
     "shortcut_name" : "MoveToTopHalf"
   },
   {
-    "shortcut_key_binding" : "ctrl+alt+j",
+    "shortcut_key_binding" : "ctrl+alt+'",
     "shortcut_name" : "MoveToLowerLeft"
   },
   {
@@ -44,15 +44,15 @@
     "shortcut_name" : "MoveToPreviousDisplay"
   },
   {
-    "shortcut_key_binding" : "ctrl+alt+return",
+    "shortcut_key_binding" : "ctrl+alt+m",
     "shortcut_name" : "MoveToFullscreen"
   },
   {
-    "shortcut_key_binding" : "ctrl+alt+g",
+    "shortcut_key_binding" : "ctrl+alt+d",
     "shortcut_name" : "MoveToNextThird"
   },
   {
-    "shortcut_key_binding" : "ctrl+alt+left",
+    "shortcut_key_binding" : "ctrl+alt+h",
     "shortcut_name" : "MoveToLeftHalf"
   },
   {
@@ -60,15 +60,15 @@
     "shortcut_name" : "MoveToCenter"
   },
   {
-    "shortcut_key_binding" : "ctrl+alt+right",
+    "shortcut_key_binding" : "ctrl+alt+l",
     "shortcut_name" : "MoveToRightHalf"
   },
   {
-    "shortcut_key_binding" : "ctrl+alt+d",
-    "shortcut_name" : "MoveToPreviousThird"
+    "shortcut_key_binding" : "ctrl+alt+[",
+    "shortcut_name" : "MoveToUpperLeft"
   },
   {
-    "shortcut_key_binding" : "ctrl+alt+k",
-    "shortcut_name" : "MoveToLowerRight"
+    "shortcut_key_binding" : "ctrl+alt+a",
+    "shortcut_name" : "MoveToPreviousThird"
   }
 ]
