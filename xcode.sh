@@ -1,8 +1,9 @@
 # macOS
 # .xcode
 
-# Remove old theme directory
-rm -Rf "${HOME}/Library/Developer/Xcode/UserData/FontAndColorThemes"
+# Backup old theme directory
+mv -f "${HOME}/Library/Developer/Xcode/UserData/FontAndColorThemes"\
+ "${HOME}/Library/Developer/Xcode/UserData/FontAndColorThemes_backup"
 
 # Remake directory for symlinking
 mkdir "${HOME}/Library/Developer/Xcode/UserData/FontAndColorThemes"

@@ -8,8 +8,8 @@ open -a "Sublime Text" && sleep 5 && osascript -e 'quit app "Sublime Text"'
 # Lazy
 SUBLIME="${HOME}/Library/Application Support/Sublime Text 3"
 
-# Remove old User directory
-rm -Rf "${SUBLIME}/Packages/User"
+# Backup old User directory
+mv -f "${SUBLIME}/Packages/User" "${SUBLIME}/Packages/User_backup"
 # Symlink User directory
 ln -sF "${HOME}/dotfiles/.sublimetext/User" "${SUBLIME}/Packages"
 

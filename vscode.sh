@@ -5,8 +5,9 @@
 # Open Visual Studio Code to create User directory
 open -a "Sublime Text" && osascript -e 'quit app "Sublime Text"' && sleep 5
 
-# Remove old User directory
-rm -Rf "${HOME}/Library/Application Support/Code/User"
+# Backup old User directory
+mv -f "${HOME}/Library/Application Support/Code/User"\
+ "${HOME}/Library/Application Support/Code/User_backup"
 # Symlink User directory
 ln -sF "${HOME}/dotfiles/.vscode/User" "${HOME}/Library/Application Support/\
 Code"
