@@ -64,3 +64,7 @@ export SSH_KEY_PATH="${HOME}/.ssh/rsa_id"
 
 # Set GPG env variable
 export GPG_TTY=$(tty)
+
+# Homebrew options
+# Wait 2 weeks between `updating homebrew..`
+export HOMEBREW_AUTO_UPDATE_SECS=1209600
