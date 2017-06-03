@@ -7,6 +7,6 @@
 mv -f "${HOME}/.vim" "${HOME}/.vim_backup"
 
 # Symlink Vim
-ln -sF "${HOME}/dotfiles/.vim" "${HOME}/.vim"
+ln -sF "${HOME}/dotfiles/.vim" "${HOME}"
 
 echo "Vim configured!"

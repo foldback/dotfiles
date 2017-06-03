@@ -3,8 +3,10 @@
 # Installs Python 2 & 3 packages
 
 # Python linters and Pylama wrapper
-pip install \
+pip install\
+   virtualenv
 
-pip3 install \
+pip3 install\
+   virtualenv
 
 echo "Python 2 & 3 packages installed!"

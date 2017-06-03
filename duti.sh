@@ -7,17 +7,17 @@
 
 # Preparation
 brew install duti
-sed -n 35,66p duti.sh > "/tmp/duti_list"
+sed -n 35,66p duti.sh > "/tmp/duti_list.txt"
 
 # Set associations
-duti "/tmp/duti_list"
+duti "/tmp/duti_list.txt"
 
 # Cleanup
 brew uninstall duti
 
 # Exit
 echo "File types succesfully associated!"
-exit
+exit 0
 
 # Data below this is ignored and written to a temporary file
 

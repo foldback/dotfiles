@@ -2,7 +2,7 @@
 # macos.sh
 # Turns macOS from bearable to brilliant
 
-# These settings are for macOS 10.12
+# These settings are for macOS 10.12 (Sierra)
 # Sourced from lots of places, Mathias Bynens in particular
 
 # Close any open System Preferences panes, to prevent them from overriding
@@ -15,7 +15,11 @@ if [ ! "${UID}" = 0 ]; then
 fi;
 
 # Keep-alive: update existing 'sudo' time stamp until script has finished
-while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2> /dev/null &
+while true; do
+  sudo -n true
+  sleep 60
+  kill -0 "$$" || exit
+done; 1>/dev/null &
 
 ###############################################################################
 # General UI/UX
@@ -60,7 +64,7 @@ defaults write com.apple.menuextra.clock FlashDateSeparators -bool false
 defaults write com.apple.menuextra.clock IsAnalog -bool false
 
 # Set highlight color to blue (default)
-defaults delete NSGlobalDomain AppleHighlightColor > /dev/null 2>&1
+defaults delete NSGlobalDomain AppleHighlightColor >/dev/null 2>&1
 
 # Set sidebar icon size to medium
 defaults write NSGlobalDomain NSTableViewDefaultSizeMode -int 2
@@ -94,6 +98,9 @@ defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false
 # Automatically quit printer app once the print jobs complete
 defaults write com.apple.print.PrintingPrefs "Quit When Finished" -bool false
 
+# Disable the “Are you sure you want to open this application?” dialog
+defaults write com.apple.LaunchServices LSQuarantine -bool false
+
 # Remove duplicates in the “Open With” menu (also see `lscleanup` alias)
 /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user
 
@@ -124,13 +131,13 @@ sudo defaults write /Library/Preferences/com.apple.loginwindow AdminHostInfo Hos
 sudo systemsetup -setrestartfreeze on
 
 # Never go into computer sleep mode
-#sudo systemsetup -setcomputersleep Off > /dev/null
+#sudo systemsetup -setcomputersleep Off >/dev/null
 
 # Power button shows shutdown dialog instead of sleeping
 defaults write com.apple.loginwindow PowerButtonSleepsSystem -bool false
 
 # Disable Notification Center and remove the menu bar icon
-#launchctl unload -w /System/Library/LaunchAgents/com.apple.notificationcenterui.plist 2> /dev/null
+#launchctl unload -w /System/Library/LaunchAgents/com.apple.notificationcenterui.plist >/dev/null 2>&1
 
 # Set a custom wallpaper image. `DefaultDesktop.jpg` is already a symlink, and
 # all wallpapers are in `/Library/Desktop Pictures/`. The default is `Wave.jpg`.
@@ -139,11 +146,11 @@ defaults write com.apple.loginwindow PowerButtonSleepsSystem -bool false
 #sudo ln -s /path/to/your/image /System/Library/CoreServices/DefaultDesktop.jpg
 
 # Enable Quick Look text selection
-# Doesn't work macOS since 10.11 (El Capitan)
+# Stopped working since 10.11 (El Capitan)
 #defaults write com.apple.finder QLEnableTextSelection -bool true
 
 # Set the timezone; see `sudo systemsetup -listtimezones` for other values
-#sudo systemsetup -settimezone "Europe/Amsterdam" > /dev/null
+#sudo systemsetup -settimezone "Europe/Amsterdam" 1>dev/null
 
 # Sync with a pool of time servers instead of just one
 # 'pool.ntp.org' uses geographically close servers automatically
@@ -152,7 +159,10 @@ sudo systemsetup -setusingnetworktime on
 sudo systemsetup -setnetworktimeserver "pool.ntp.org"
 
 # Change DNS servers to a combination of Google and OpenDNS
-networksetup -setdnsservers Wi-Fi "8.8.8.8" "8.8.4.4" "208.67.222.222" "208.67.220.220"
+networksetup -setdnsservers Wi-Fi "8.8.8.8" "208.67.222.222"\
+ "8.8.4.4" "208.67.220.220"\
+ && dscacheutil -flushcache && killall -HUP mDNSResponder
+
 ###############################################################################
 # SSD-specific tweaks
 ###############################################################################
@@ -187,7 +197,7 @@ defaults write NSGlobalDomain com.apple.mouse.tapBehavior -bool true
 #defaults -currentHost write NSGlobalDomain com.apple.trackpad.enableSecondaryClick -bool true
 
 # Make clicks silent on Force Touch-trackpad
-defaults write com.apple.AppleMultitouchTrackpad ActuationStrength -bool false 
+defaults write com.apple.AppleMultitouchTrackpad ActuationStrength -bool false
 
 # Medium pressure to register first click
 defaults write com.apple.AppleMultitouchTrackpad FirstClickThreshold -int 1
@@ -262,10 +272,10 @@ sudo defaults write /Library/Preferences/com.apple.iokit.AmbientLightSensor.plis
 
 # Enable F1-F12, hold fn for media functions
 # This makes debuggers much easier to use
-#defaults write NSGlobalDomain com.apple.keyboard.fnState -bool tru
+#defaults write NSGlobalDomain com.apple.keyboard.fnState -bool true
 
 # Stop iTunes from responding to the keyboard media keys
-#launchctl unload -w /System/Library/LaunchAgents/com.apple.rcd.plist 2> /dev/null
+#launchctl unload -w /System/Library/LaunchAgents/com.apple.rcd.plist >/dev/null 2>&1
 
 ###############################################################################
 # Screen
@@ -314,11 +324,11 @@ defaults write com.apple.finder AppleShowAllFiles -bool true
 # Show all filename extensions
 defaults write NSGlobalDomain AppleShowAllExtensions -bool true
 
-# Don't show status bar
+# Hide status bar
 defaults write com.apple.finder ShowStatusBar -bool false
 
-# Show path bar
-defaults write com.apple.finder ShowPathbar -bool true
+# Hide path bar
+defaults write com.apple.finder ShowPathbar -bool false
 
 # Display full POSIX path as Finder window title
 defaults write com.apple.finder _FXShowPosixPathInTitle -bool true
@@ -353,27 +363,27 @@ defaults write com.apple.frameworks.diskimages auto-open-rw-root -bool true
 defaults write com.apple.finder OpenWindowForNewRemovableDisk -bool true
 
 # Show item info near icons on the desktop and in other icon views
-/usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:showItemInfo true" "$HOME/Library/Preferences/com.apple.finder.plist"
-/usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:showItemInfo true" "$HOME/Library/Preferences/com.apple.finder.plist"
-/usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:showItemInfo true" "$HOME/Library/Preferences/com.apple.finder.plist"
+/usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:showItemInfo true" "${HOME}/Library/Preferences/com.apple.finder.plist"
+/usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:showItemInfo true" "${HOME}/Library/Preferences/com.apple.finder.plist"
+/usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:showItemInfo true" "${HOME}/Library/Preferences/com.apple.finder.plist"
 
 # Show item info on the bottom of the icons on the desktop
-/usr/libexec/PlistBuddy -c "Set DesktopViewSettings:IconViewSettings:labelOnBottom true" "$HOME/Library/Preferences/com.apple.finder.plist"
+/usr/libexec/PlistBuddy -c "Set DesktopViewSettings:IconViewSettings:labelOnBottom true" "${HOME}/Library/Preferences/com.apple.finder.plist"
 
 # Enable snap-to-grid for icons on the desktop and in other icon views
-/usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:arrangeBy grid" "$HOME/Library/Preferences/com.apple.finder.plist"
-/usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:arrangeBy grid" "$HOME/Library/Preferences/com.apple.finder.plist"
-/usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:arrangeBy grid" "$HOME/Library/Preferences/com.apple.finder.plist"
+/usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:arrangeBy grid" "${HOME}/Library/Preferences/com.apple.finder.plist"
+/usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:arrangeBy grid" "${HOME}/Library/Preferences/com.apple.finder.plist"
+/usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:arrangeBy grid" "${HOME}/Library/Preferences/com.apple.finder.plist"
 
 # Increase grid spacing for icons on the desktop and in other icon views
-/usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:gridSpacing 95" "$HOME/Library/Preferences/com.apple.finder.plist"
-/usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:gridSpacing 95" "$HOME/Library/Preferences/com.apple.finder.plist"
-/usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:gridSpacing 95" "$HOME/Library/Preferences/com.apple.finder.plist"
+/usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:gridSpacing 95" "${HOME}/Library/Preferences/com.apple.finder.plist"
+/usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:gridSpacing 95" "${HOME}/Library/Preferences/com.apple.finder.plist"
+/usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:gridSpacing 95" "${HOME}/Library/Preferences/com.apple.finder.plist"
 
 # Increase the size of icons on the desktop and in other icon views
-/usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:iconSize 80" "$HOME/Library/Preferences/com.apple.finder.plist"
-/usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:iconSize 80" "$HOME/Library/Preferences/com.apple.finder.plist"
-/usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:iconSize 80" "$HOME/Library/Preferences/com.apple.finder.plist"
+/usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:iconSize 80" "${HOME}/Library/Preferences/com.apple.finder.plist"
+/usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:iconSize 80" "${HOME}/Library/Preferences/com.apple.finder.plist"
+/usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:iconSize 80" "${HOME}/Library/Preferences/com.apple.finder.plist"
 
 # Use column view in all Finder windows by default
 # Four-letter codes for the other view modes: 'icnv', 'clmv', 'Flwv'
@@ -388,11 +398,11 @@ defaults write com.apple.finder FXArrangeGroupViewBy -string "Name"
 # Disable the warning before emptying the Trash
 defaults write com.apple.finder WarnOnEmptyTrash -bool false
 
-# Enable AirDrop over Ethernet and on unsupported Macs running Lion
+# Enable AirDrop on Ethernet and older Macs
 defaults write com.apple.NetworkBrowser BrowseAllInterfaces -bool true
 
 # Enable the MacBook Air SuperDrive on any Mac
-# Generates error
+# Stopped working since 10.11 (El Capitan) due to `System Integrity Protection`
 #sudo nvram boot-args="mbasd=1"
 
 # Show the $HOME/Library folder
@@ -426,7 +436,7 @@ defaults write com.apple.dock tilesize -int 47
 # Change minimize/maximize window effect to default
 defaults write com.apple.dock mineffect -string "genie"
 
-# Don't Minimize windows into their application’s icon
+# Minimize windows to Dock instead of application icon
 defaults write com.apple.dock minimize-to-application -bool false
 
 # Enable spring loading for all Dock items
@@ -447,7 +457,7 @@ defaults write com.apple.dock show-process-indicators -bool true
 defaults write com.apple.dock launchanim -bool true
 
 # Speed up Mission Control animations
-# Doesn't work macOS since 10.12 (Sierra)
+# Stopped working since 10.12 (Sierra)
 # Mission Control animation speed is now tied to gesture intensity
 #defaults write com.apple.dock expose-animation-duration -float 0.1
 
@@ -467,8 +477,8 @@ defaults write com.apple.dock mru-spaces -bool false
 # Remove the auto-hiding Dock delay
 defaults write com.apple.dock autohide-delay -int 0
 
-# Remove the animation when hiding/showing the Dock
-#defaults write com.apple.dock autohide-time-modifier -int 0
+# Enable the animation when hiding/showing the Dock
+defaults write com.apple.dock autohide-time-modifier -int 1
 
 # Automatically hide and show the Dock
 defaults write com.apple.dock autohide -bool true
@@ -482,7 +492,7 @@ defaults write com.apple.dock showhidden -bool true
 defaults write com.apple.dock orientation -string "bottom"
 
 # Disable the Launchpad gesture (pinch with thumb and three fingers)
-#defaults write com.apple.dock showLaunchpadGestureEnabled -int 0
+#defaults write com.apple.dock showLaunchpadGestureEnabled -bool false
 
 # Reset Launchpad, but keep the desktop wallpaper intact
 find "${HOME}/Library/Application Support/Dock" -name "*-*.db" -maxdepth 1 -delete
@@ -528,7 +538,7 @@ defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebK
 defaults write com.apple.Safari ShowFullURLInSmartSearchField -bool true
 
 # Show Chrome-style status bar
-defaults write com.apple.Safari ShowStatusBar -bool true
+defaults write com.apple.Safari ShowOverlayStatusBar -bool true
 
 # Set Safari’s home page to `about:blank` for faster loading
 defaults write com.apple.Safari HomePage -string "about:blank"
@@ -606,6 +616,10 @@ defaults write com.apple.Safari SendDoNotTrackHTTPHeader -bool false
 # Update extensions automatically
 defaults write com.apple.Safari InstallExtensionUpdatesAutomatically -bool true
 
+# No nag screens
+defaults write com.apple.Safari DidActivateReaderAtleastOnce -bool true
+defaults write com.apple.Safari UniversalSearchFeatureNotificationHasBeenDisplayed -bool true
+
 ###############################################################################
 # Mail
 ###############################################################################
@@ -642,8 +656,8 @@ defaults write com.apple.mail SpellCheckingBehavior -string "InlineSpellChecking
 # Use `sudo mdutil -i off "/Volumes/foo"` to stop indexing any volume.
 #sudo defaults write /.Spotlight-V100/VolumeConfiguration Exclusions -array "/Volumes"
 # Change indexing order and disable some search results
-# macOS 10.10 (Yosemite) specific search results
-# Remove if on macOS 10.9 (Mavericks) or older
+# 10.10+ (Yosemite) specific search results
+# Remove if your macOS is older
 #   MENU_DEFINITION
 #   MENU_CONVERSION
 #   MENU_EXPRESSION
@@ -675,11 +689,11 @@ defaults write com.apple.spotlight orderedItems -array \
   '{"enabled" = 0;"name" = "MENU_SPOTLIGHT_SUGGESTIONS";}'
 
 # Load new settings before rebuilding the index
-killall mds > /dev/null 2>&1
+killall mds 1>/dev/null
 # Make sure indexing is enabled for the main volume
-sudo mdutil -i on / > /dev/null
+sudo mdutil -i on / 1>/dev/null
 # Rebuild the index from scratch
-sudo mdutil -E / > /dev/null
+sudo mdutil -E / 1>/dev/null
 
 ###############################################################################
 # Address Book
@@ -688,7 +702,7 @@ sudo mdutil -E / > /dev/null
 # Enable the debug menu in Address Book
 defaults write com.apple.addressbook ABShowDebugMenu -bool true
 
-# Order & Show by first name, last name
+# Order & show by `Firstname Lastname`
 defaults write com.apple.AddressBook ABNameDisplay -int 0
 defaults write com.apple.AddressBook ABNameSortingFormat -string "sortingFirstName sortingLastName"
 
@@ -708,7 +722,8 @@ defaults write com.apple.iCal "Show Week Numbers" -bool true
 # Turn on birthday calendar
 defaults write com.apple.iCal "display birthdays calendar" -bool true
 
-# Enable the debug menu in iCal (macOS <10.8)
+# Enable the debug menu in iCal
+# Stopped working since 10.8 (Mountain Lion)
 #defaults write com.apple.iCal IncludeDebugMenu -bool true
 
 ###############################################################################
@@ -719,15 +734,14 @@ defaults write com.apple.iCal "display birthdays calendar" -bool true
 # Only use UTF-8 in Terminal.app
 defaults write com.apple.terminal StringEncodings -array 4
 
-# Use Oceanic Next Dark theme by default in Terminal.app
+# Use Oceanic Next Dark theme in Terminal.app
 osascript <<EOD
-
 tell application "Terminal"
 
   local allOpenedWindows
   local initialOpenedWindows
   local windowID
-  set themeName to "base16-oceanicnext.dark"
+  set themeName to "Oceanic_Next_Terminal-app"
 
   (* Store the IDs of all the open terminal windows. *)
   set initialOpenedWindows to id of every window
@@ -735,7 +749,7 @@ tell application "Terminal"
   (* Open the custom theme so that it gets added to the list
      of available terminal themes (note: this will open two
      additional terminal windows). *)
-  do shell script "open '${HOME}/dotfiles/resources/base16-oceanic-next/terminal-app" & themeName & ".terminal'"
+  do shell script "open '${HOME}/dotfiles/resources/themes/" & themeName & ".terminal'"
 
   (* Wait a little bit to ensure that the custom theme is added. *)
   delay 1
@@ -763,7 +777,6 @@ tell application "Terminal"
   end repeat
 
 end tell
-
 EOD
 
 # Enable “focus follows mouse” for Terminal.app and all X11 apps
@@ -776,26 +789,31 @@ EOD
 defaults write com.apple.terminal SecureKeyboardEntry -bool true
 
 # Disable the annoying line marks
-defaults write com.pple.Terminal ShowLineMarks -int 0
+defaults write com.apple.Terminal ShowLineMarks -bool false
 
 # Only show scroll bars when scrolling
 defaults write com.apple.Terminal AppleShowScrollBars -string "WhenScrolling"
 
 # iTerm 2
-# Enable Secure Keyboard Entry in iTerm
+# Enable Secure Keyboard Entry in iTerm2
 # See: https://security.stackexchange.com/a/47786/8918
 defaults write com.googlecode.iterm2 "Secure Input" -bool true
 
-# Install the Solarized Dark theme for iTerm
-open "${HOME}/dotfiles/resources/base16-oceanic-next/iterm2/base16-oceanicnext.dark.itermcolors"
+# Use the Oceanic Next Dark theme in iTerm2
+open "${HOME}/dotfiles/resources/themes/Oceanic_Next_iTerm2"\
+ && sleep 5 && osascript -e 'quit app "iTerm2"'
 
-# Don’t display the annoying prompt when quitting iTerm
+# Set font and font size in iTerm2
+sed -i "" 's/Monaco\ 12/SourceCodePro-Regular\ 15/g'\
+ "${HOME}/Library/Preferences/com.googlecode.iterm2.plist" >/dev/null 2>&1
+
+# Don’t display the annoying prompt when quitting iTerm2
 defaults write com.googlecode.iterm2 PromptOnQuit -bool false
 
-# Don't display tip of the day
+# Hide tip of the day
 defaults write com.googlecode.iterm2 NoSyncTipsDisabled -bool true
 
-# Fix window managers (Magnet.me, Spectacle, Moom) resizing bug
+# Fix window manager (Magnet.me, Spectacle, Moom) resizing bug
 # https://gitlab.com/gnachman/iterm2/issues/4771
 defaults write com.googlecode.iterm2 DisableWindowSizeSnap -bool true
 
@@ -806,7 +824,7 @@ defaults write com.googlecode.iterm2 DisableWindowSizeSnap -bool true
 # Login & Password
 # Require password immediately after sleep or screen saver begins
 # Delay is in seconds
-defaults write com.apple.screensaver askForPassword -int 1
+defaults write com.apple.screensaver askForPassword -bool true
 defaults write com.apple.screensaver askForPasswordDelay -int 0
 
 # Ask for both name and password
@@ -822,26 +840,39 @@ sudo defaults write /Library/Preferences/com.apple.loginwindow GuestEnabled -boo
 #sudo defaults write /library/preferences/com.apple.loginwindow PowerOffDisabled -bool true
 
 # Enable firewall
-# 0 is off, 1 for specific sevices, 2 allows only essential services a connection
+# 0 is off, 1 for `normal` mode, 2 allows only essential services
 sudo defaults write /Library/Preferences/com.apple.alf globalstate -int 1
 
 # Enable firewall stealth mode
 # Source: https://support.apple.com/kb/PH18642
-# Warning: this is known to be incompatible with some routers, causing disconnects
 #sudo defaults write /Library/Preferences/com.apple.alf stealthenabled -bool true
 
-# Do not automatically allow signed software to receive incoming connections
-#sudo defaults write /Library/Preferences/com.apple.alf allowsignedenabled -bool false
-#sudo defaults write /Library/Preferences/com.apple.alf allowdownloadsignedenabled -bool false
+# Automatically allow signed software to receive incoming connections
+sudo defaults write /Library/Preferences/com.apple.alf allowsignedenabled -bool true
+sudo defaults write /Library/Preferences/com.apple.alf allowdownloadsignedenabled -bool true
 
 # Enable firewall logging
-#sudo defaults write /Library/Preferences/com.apple.alf loggingenabled -bool true
+sudo defaults write /Library/Preferences/com.apple.alf loggingenabled -bool true
+
 # Log firewall events for 90 days
-#sudo perl -p -i -e 's/rotate=seq compress file_max=5M all_max=50M/rotate=utc compress file_max=5M ttl=90/g' "/etc/asl.conf"
-#sudo perl -p -i -e 's/appfirewall.log file_max=5M all_max=50M/appfirewall.log rotate=utc compress file_max=5M ttl=90/g' "/etc/asl.conf"
+sudo sed -i "" 's/appfirewall.log file_max=5M all_max=50M/appfirewall.log rotate=utc compress file_max=5M ttl=90/g' "/etc/asl.conf"
+
+# Logging <3
+# Most logging is managed with asl since 10.9 (Mavericks)
+# secure.log has been rolled into system.log
+# Log system events for 90 days
+sudo sed -i "" 's/system\.log mode=0640 format=bsd rotate=seq compress file_max=5M all_max=50M/system\.log mode=0640 format=bsd rotate=utc compress file_max=5M ttl=90/g' "/etc/asl.conf"
+# Log authentication events for 90 days
+sudo sed -i "" 's/\/var\/log\/authd\.log mode=0640 compress format=bsd rotate=seq file_max=5M all_max=20M/\/var\/log\/authd\.log mode=0640 compress format=bsd rotate=utc file_max=5M ttl=90/g' "/etc/asl/com.apple.authd"
+# Log installation events for a year
+sudo sed -i "" 's/\/var\/log\/install\.log format=bsd/\/var\/log\/install\.log format=bsd mode=0640 rotate=utc compress file_max=5M ttl=365/g' "/etc/asl/com.apple.install"
+# Keep a log of kernel events for 30 days, and increase the scope of logging
+sudo sed -i "" 's/flags:lo,aa/flags:lo,aa,ad,fd,fm,-all,\^-fa,\^-fc,\^-cl/g' "/private/etc/security/audit_control"
+sudo sed -i "" 's/filesz:2M/filesz:10M/g' "/private/etc/security/audit_control"
+sudo sed -i "" 's/expire-after:10M/expire-after:30d/g' "/private/etc/security/audit_control"
 
 # Reload the firewall
-# (uncomment if above is not commented out)
+# Stopped working since 10.11 (El Capitan) due to `System Integrity Protection`
 #launchctl unload /System/Library/LaunchAgents/com.apple.alf.useragent.plist
 #sudo launchctl unload /System/Library/LaunchDaemons/com.apple.alf.agent.plist
 #sudo launchctl load /System/Library/LaunchDaemons/com.apple.alf.agent.plist
@@ -863,8 +894,8 @@ sudo defaults write /Library/Preferences/com.apple.alf globalstate -int 1
 # Disable the crash reporter
 #defaults write com.apple.CrashReporter DialogType -string "none"
 
-# Make Crash Reporter appear as notification
-defaults write com.apple.CrashReporter UseUNC 1
+# Crash Reporter appears as notification
+defaults write com.apple.CrashReporter UseUNC -bool true
 
 # Empty Trash securely by default
 defaults write com.apple.finder EmptyTrashSecurely -bool true
@@ -881,7 +912,7 @@ defaults write com.apple.finder EmptyTrashSecurely -bool true
 defaults write com.apple.TimeMachine DoNotOfferNewDisksForBackup -bool true
 
 # Disable local Time Machine backups
-#hash tmutil &> /dev/null && sudo tmutil disablelocal
+#hash tmutil >/dev/null 2>&1 && sudo tmutil disablelocal
 
 ###############################################################################
 # Activity Monitor
@@ -919,7 +950,7 @@ defaults write com.apple.DiskUtility advanced-image-options -bool true
 defaults write com.apple.reminders RemindersDebugMenu -boolean true
 
 # Use plain text mode for new TextEdit documents
-defaults write com.apple.TextEdit RichText -int 0
+defaults write com.apple.TextEdit RichText -bool true
 # Open and save files as UTF-8 in TextEdit
 defaults write com.apple.TextEdit PlainTextEncoding -int 4
 defaults write com.apple.TextEdit PlainTextEncodingForWrite -int 4
@@ -1016,7 +1047,7 @@ defaults write org.m0k.transmission AutoSize -bool true
 # Hide status bar
 defaults write org.m0k.transmission StatusBar -bool false
 
-# Don't display upload speed on dock icon
+# Hide upload speed on dock icon
 defaults write org.m0k.transmission BadgeUploadRate -bool false
 
 # Prevent silently quitting only when a download is active
@@ -1034,13 +1065,13 @@ defaults write org.m0k.transmission RandomPort -bool true
 defaults write org.m0k.transmission BlocklistAutoUpdate -bool true
 defaults write org.m0k.transmission BlocklistNew -bool true
 # Blocklist don't work
-# if a bad peer is trying to connect to you, he's already aware you're sharing data
+# if a bad peer tries to connect, he's already aware you're sharing
 #defaults write org.m0k.transmission BlocklistURL -string "http://john.bitsurge.net/public/biglist.p2p.gz"
 
 # Hide the legal disclaimer
 defaults write org.m0k.transmission WarningLegal -bool false
 
-# Hide the donate message
+# Hide the donation message
 defaults write org.m0k.transmission WarningDonate -bool false
 
 ###############################################################################

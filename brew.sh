@@ -20,7 +20,7 @@ install/master/install)"
 # Make sure we’re using the latest Homebrew.
 brew update
 
-# Upgrade any already-installed formulae.
+# Upgrade any already-installed packages.
 brew upgrade
 
 # Binaries

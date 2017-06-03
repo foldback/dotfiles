@@ -6,7 +6,7 @@
 DROPBOX="${HOME}/Dropbox"
 
 # Check if Dropbox folder doesn't exist or is empty
-# An empty macOS folder is 532Kilobyte
+# An empty macOS folder can be up to 532kB
 SIZE_E="$(du -d0 ${DROPBOX} | grep -o '[0-9]*')"
 if [ ! -d "${DROPBOX}" ] || [ "${SIZE_E}" < "533" ]; then
   echo "Please log in to Dropbox!"

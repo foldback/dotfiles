@@ -2,7 +2,7 @@
 # Installs NPM packages
 
 # Global packages
-npm install -g \
-  eslint
+npm install -g\
+   eslint
 
 echo "Node packages installed!"

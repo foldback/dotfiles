@@ -10,11 +10,11 @@ alias ~="cd ~" # `cd` is probably faster to type though
 alias -- -="cd -"
 
 # Shortcuts
-alias dsk="cd ${HOME}/Desktop/"
-alias dwn="cd ${HOME}/Downloads/"
-alias drp="cd ${HOME}/Dropbox/"
-alias dtf="cd ${HOME}/dotfiles/"
-alias prj="cd ${HOME}/projects/"
+alias dsk="cd ${HOME}/Desktop"
+alias dwn="cd ${HOME}/Downloads"
+alias drp="cd ${HOME}/Dropbox"
+alias dtf="cd ${HOME}/dotfiles"
+alias prj="cd ${HOME}/projects"
 
 # List all files colorized in long format
 alias lsl="ls -lF ${colorflag}"
@@ -78,13 +78,13 @@ alias httpdump="sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E\
  \"Host\: .*|GET \/.*\""
 
 # Canonical hex dump; some systems have this symlinked
-command -v hd > /dev/null || alias hxd="hexdump -C"
+command -v hd >/dev/null || alias hxd="hexdump -C"
 
 # macOS has no `md5sum`, so use `md5` as a fallback
-command -v md5sum > /dev/null || alias md5sum="md5"
+command -v md5sum >/dev/null || alias md5sum="md5"
 
 # macOS has no `sha1sum`, so use `shasum` as a fallback
-command -v sha1sum > /dev/null || alias sha1sum="shasum"
+command -v sha1sum >/dev/null || alias sha1sum="shasum"
 
 # JavaScriptCore REPL
 jscbin="/System/Library/Frameworks/JavaScriptCore.\
@@ -102,9 +102,10 @@ alias ds_clean="find . -type f -name '*.DS_Store' -ls -delete"
 # Clear Apple’s System Logs to improve shell startup speed.
 # Clear download history from quarantine.
 # https://goo.gl/Zz78p8
-alias emptytrash="sudo rm -Rfv /Volumes/*/.Trashes; sudo rm -Rfv\
- ${HOME}/.Trash; sudo rm -Rfv /private/var/log/asl/*.asl; sqlite3\
- ${HOME}/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV*\
+alias emptytrash="sudo rm -Rfv /Volumes/*/.Trashes;\
+ sudo rm -Rfv ${HOME}/.Trash;\
+ sudo rm -Rfv /private/var/log/asl/*.asl;\
+ sqlite3 ${HOME}/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV*\
  'delete from LSQuarantineEvent'"
 
 # Show/hide hidden files in Finder
@@ -113,15 +114,14 @@ alias show="defaults write com.apple.finder AppleShowAllFiles -bool true &&\
 alias hide="defaults write com.apple.finder AppleShowAllFiles -bool false &&\
  defaults write NSGlobalDomain AppleShowAllFiles -bool false && killall Finder"
 
-# Hide/show all desktop icons (useful when presenting)
-alias hidedesktop="defaults write com.apple.finder CreateDesktop -bool false\
+# show/hide all desktop icons (useful when presenting)
+alias showdsk="defaults write com.apple.finder CreateDesktop -bool true\
  && killall Finder"
-alias showdesktop="defaults write com.apple.finder CreateDesktop -bool true\
+alias hidedsk="defaults write com.apple.finder CreateDesktop -bool false\
  && killall Finder"
 
 # URL-encode strings
-alias urlencode='python -c "import sys, urllib as ul;\
- print ul.quote_plus(sys.argv[1]);"'
+alias urlencode='python -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1]);"'
 
 # Merge PDF files
 # Usage: `mergepdf -o output.pdf input{1,2,3}.pdf`
@@ -129,9 +129,9 @@ alias mergepdf="/System/Library/Automator/Combine\ PDF\ \
 Pages.action/Contents/Resources/join.py"
 
 # Disable Spotlight
-alias spotloff="sudo mdutil -a -i off"
+alias spotoff="sudo mdutil -a -i off"
 # Enable Spotlight
-alias spotlon="sudo mdutil -a -i on"
+alias spoton="sudo mdutil -a -i on"
 
 # PlistBuddy alias, because sometimes `defaults` just doesn’t cut it
 alias plistbuddy="/usr/libexec/PlistBuddy"
@@ -151,15 +151,15 @@ alias map="xargs -n1"
 
 # One of @janmoesen’s ProTips™
 for method in GET HEAD POST PUT DELETE TRACE OPTIONS; do
-  alias "$method"="lwp-request -m '$method'"
+  alias "${method}"="lwp-request -m '${method}'"
 done
 
 # Make Grunt print stack traces by default
 command -v grunt > /dev/null && alias grunt="grunt --stack"
 
 # http://xkcd.com/530/
-alias hush="osascript -e 'set volume output muted true'"
-alias deaf="osascript -e 'set volume output volume 100'"
+alias stfu="osascript -e 'set volume output muted true'"
+alias pumpitup="osascript -e 'set volume output volume 100'"
 
 # Kill all the tabs in Chrome to free up memory
 # [C] explained: http://www.commandlinefu.com/commands/view/402/exclude-grep-from-your-grepped-output-of-ps-alias-included-in-description
@@ -167,11 +167,11 @@ alias deaf="osascript -e 'set volume output volume 100'"
 #grep -v extension-process | tr -s ' ' | cut -d ' ' -f2 | xargs kill"
 
 # Lock the screen (when going AFK)
-alias lock="/System/Library/CoreServices/Menu\ Extras/User.menu/\
+alias lockscr="/System/Library/CoreServices/Menu\ Extras/User.menu/\
 Contents/Resources/CGSession -suspend"
 
 # Reload the shell (i.e. invoke as a login shell)
-alias reload="exec $SHELL -l"
+alias rldsh="exec ${SHELL} -l"
 
 # Print each PATH entry on a separate line
 alias path='echo -e ${PATH//:/\\n}'

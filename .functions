@@ -2,17 +2,17 @@
 # .functions
 
 # Create a new directory and enter it
-function mkdire() {
+mkedir() {
   mkdir -p "$@" && cd "$_"
 }
 
 # Change working directory to the top-most Finder window location
-function cdf() { # short for `cdfinder`
+cdf() { # short for `cdfinder`
   cd "$(osascript -e 'tell app "Finder" to POSIX path of (insertion location as alias)')"
 }
 
 # Create a .tar.gz archive, using `zopfli`, `pigz` or `gzip` for compression
-function targz() {
+targz() {
   local tmpFile="${@%/}.tar"
   tar -cvf "${tmpFile}" --exclude=".DS_Store" "${@}" || return 1
 
@@ -46,7 +46,7 @@ function targz() {
 }
 
 # Compare original and gzipped file size
-function gzcompare() {
+gzcompare() {
   local origsize=$(wc -c < "$1")
   local gzipsize=$(gzip -c "$1" | wc -c)
   local ratio=$(echo "$gzipsize * 100 / $origsize" | bc -l)
@@ -55,7 +55,7 @@ function gzcompare() {
 }
 
 # Determine size of a file or total size of a directory
-function rdsize() {
+sizer() {
   if du -b /dev/null > /dev/null 2>&1; then
     local arg=-sbh
   else
@@ -71,13 +71,13 @@ function rdsize() {
 # Use Git’s colored diff when available
 hash git &>/dev/null;
 if [ $? -eq 0 ]; then
-  function diff() {
+  diff() {
     git diff --no-index --color-words "$@"
   }
 fi;
 
 # Create a data URL from a file
-function dataurl() {
+dataurl() {
   local mimeType=$(file -b --mime-type "$1")
   if [ "${mimeType}" = "text/"* ]; then
     mimeType="${mimeType};charset=utf-8"
@@ -86,7 +86,7 @@ function dataurl() {
 }
 
 # Create a git.io short URL
-function gitio() {
+gitio() {
   if [ -z "${1}" -o -z "${2}" ]; then
     echo "Usage: \`gitio slug url\`"
     return 1
@@ -95,7 +95,7 @@ function gitio() {
 }
 
 # Start an HTTP server from a directory, optionally specifying the port
-function httpserver() {
+httpserver() {
   local port="${1:-8000}"
   sleep 1 && open "http://localhost:${port}/" &
   # Set the default Content-Type to `text/plain` instead
@@ -107,7 +107,7 @@ function httpserver() {
 
 # Start a PHP server from a directory, optionally specifying the port
 # (Requires PHP 5.4.0+.)
-function phpserver() {
+phpserver() {
   local port="${1:-4000}"
   local ip=$(ipconfig getifaddr en1)
   sleep 1 && open "http://${ip}:${port}/" &
@@ -116,7 +116,7 @@ function phpserver() {
 
 # Syntax-highlight JSON strings or files
 # Usage: `json '{"foo":42}'` or `echo '{"foo":42}' | json`
-function json() {
+json() {
   if [ -t 0 ]; then # argument
     python -mjson.tool <<< "$*" | pygmentize -l javascript
   else # pipe
@@ -125,7 +125,7 @@ function json() {
 }
 
 # UTF-8-encode a string of Unicode symbols
-function unicoder() {
+ucode() {
   printf "\\\x%s" $(printf "$@" | xxd -p -c1 -u)
   # print a newline unless we’re piping the output to another program
   if [ -t 1 ]; then
@@ -134,7 +134,7 @@ function unicoder() {
 }
 
 # Decode \x{ABCD}-style Unicode escape sequences
-function unidecoder() {
+udecode() {
   perl -e "binmode(STDOUT, ':utf8'); print \"$@\"";
   # print a newline unless we’re piping the output to another program
   if [ -t 1 ]; then
@@ -143,7 +143,7 @@ function unidecoder() {
 }
 
 # Get a character’s Unicode code point
-function unipointer() {
+upoint() {
   perl -e "use utf8; print sprintf('U+%04X', ord(\"$@\"))";
   # print a newline unless we’re piping the output to another program
   if [ -t 1 ]; then
@@ -153,7 +153,7 @@ function unipointer() {
 
 # `s` with no arguments opens the current directory in Sublime Text, otherwise
 # opens the given location
-function s() {
+s() {
   if [ $# -eq 0 ]; then
     subl .
   else
@@ -163,7 +163,7 @@ function s() {
 
 # `a` with no arguments opens the current directory in Atom Editor, otherwise
 # opens the given location
-function a() {
+a() {
   if [ $# -eq 0 ]; then
     atom .
   else
@@ -173,7 +173,7 @@ function a() {
 
 # `v` with no arguments opens the current directory in Vim, otherwise opens the
 # given location
-function v() {
+v() {
   if [ $# -eq 0 ]; then
     vim .
   else
@@ -183,7 +183,7 @@ function v() {
 
 # `c` with no arguments opens the current directory in Visual Studio Code
 # otherwise opens the given location
-function c() {
+c() {
   if [ $# -eq 0 ]; then
     code .
   else
@@ -193,7 +193,7 @@ function c() {
 
 # `o` with no arguments opens the current directory, otherwise opens the given
 # location
-function o() {
+o() {
   if [ $# -eq 0 ]; then
     open .
   else
@@ -201,17 +201,17 @@ function o() {
   fi;
 }
 
-# `trees` is `tree` with hidden files and color enabled, ignoring
+# `treez` is `tree` with hidden files and color enabled, ignoring
 # the `.git` directory, listing directories first. The output gets piped into
 # `less` with options to preserve color and line numbers, unless the output is
 # small enough for one screen.
-function trees() {
+treez() {
   tree -aC -I '.git | node_modules | bower_components' --dirsfirst "$@" | less -FRNX
 }
 
 # Get bundle name of an application
-# `bundleid Finder`
-function bundleid() {
+# `bundleid "Keychain Access"`
+bundleid() {
   if [ "$(find "/Applications/" -maxdepth 5 -name "${@}" -print -quit)" ] || [ "$(find "/System/Library/CoreServices/" -maxdepth 2 -name "${@}.app" -print -quit)" ]; then
     osascript \
       -e 'on run(argv)' \
@@ -224,6 +224,6 @@ function bundleid() {
 
 # Shorten URLs with Tinyurl
 # Other shorteners (goo.gl, bit.ly, ow.ly) all require API keys
-function tnyrl() {
+tinyurl() {
   curl -s "http://tinyurl.com/api-create.php?url=$1" | pbcopy
 }
