@@ -1,7 +1,6 @@
 " .cvimrc
 " Settings
 
-set autoupdategist
 set noautofocus
 set typelinkhints
 
