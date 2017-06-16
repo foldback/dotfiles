@@ -29,8 +29,9 @@
 	"show_encoding": true,
 	"show_line_endings": true,
 	"tab_size": 2,
-	"trim_trailing_white_space_on_save": true,
 	"theme": "Oceanic Next.sublime-theme",
 	"translate_tabs_to_spaces": true,
-	"vintage_start_in_command_mode": true
+	"trim_trailing_white_space_on_save": true,
+	"vintage_start_in_command_mode": true,
+	"word_wrap": false
 }

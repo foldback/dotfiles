@@ -8,11 +8,14 @@
 		"A File Icon",
 		"Anaconda",
 		"Git",
+		"GitGutter",
 		"Oceanic Next Color Scheme",
 		"Package Control",
 		"SideBarEnhancements",
 		"SublimeLinter",
 		"SublimeLinter-contrib-clang",
-		"SublimeLinter-contrib-eslint"
+		"SublimeLinter-contrib-eslint",
+		"Surround",
+		"Vintage Surround"
 	]
 }
