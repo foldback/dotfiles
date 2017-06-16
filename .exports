@@ -1,6 +1,14 @@
 # macOS
 # .exports
 
+# Explicitly set $TERM
+if [ "${COLORTERM}" = "gnome-*" ] >/dev/null 2>&1 && [ "${TERM}" = "xterm" ] \
+>/dev/null 2>&1 && [ "$(infocmp "gnome-256color")" ] >/dev/null 2>&1; then
+  export TERM="gnome-256color"
+elif [ "$(infocmp "xterm-256color")" ] >/dev/null 2>&1; then
+  export TERM="xterm-256color"
+fi;
+
 # Make Vim the default editor for local and remote sessions.
 if [ -n "${SSH_CONNECTION}" ]; then
   export EDITOR="vim"
@@ -18,63 +26,49 @@ export NODE_REPL_MODE="sloppy"
 # Make Python use UTF-8 encoding for output to stdin, stdout, and stderr.
 export PYTHONIOENCODING="UTF-8"
 
-# Shell history settings
-# By doing this `bash` and `zsh` share their history
-# Filename for history file
-export HISTFILE="${HOME}/.shellhistory"
-# Allow 32³ entries in history `buffer`
-export HISTSIZE="32768"
-# `bash` history settings
-if [ -n "$BASH_VERSION" ]; then
-  # Allow 32³ entries in history file
-  export HISTFILESIZE="${HISTSIZE}"
-  # Append instead of overwrite history file
-  shopt -s histappend
-  # Omit duplicates and commands that begin with a space from history
-  export HISTCONTROL="ignoreboth:erasedups"
-# `zsh` history settings
-elif [ -n "$ZSH_VERSION" ]; then
-  # # Allow 32³ entries in history file
-  export SAVEHIST="32768"
-  # Append into history file incrementally instead of write-on-exit
-  setopt SHARE_HISTORY
-  # Omit duplicates from history
-  setopt HIST_IGNORE_DUPS
-  # Omit commands that begin with a space from history
-  setopt HIST_IGNORE_SPACE
-  # Add timestamp for each entry
-  # Disabled because of shared history file with bash
-  #setopt EXTENDED_HISTORY
-else
-  : # do nothing
-fi;
-
 # Prefer US English and use UTF-8.
 export LANG="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
 
-# Highlight section titles in manual pages.
-export LESS_TERMCAP_md="${YELLOW}"
+# Awesome manpager
+# Display %location in manpage
+# Use visual bell
+# https://stackoverflow.com/a/19871578/806798
+export MANPAGER='less -m -q +Gg'
 
-# Don’t clear the screen after quitting a manual page.
-export MANPAGER="less -X"
+# No `less` history file
+LESSHISTFILE=-
+
+# Have `less` display colors
+# https://unix.stackexchange.com/a/329092
+export LESS_TERMCAP_mb=$'\e[1;31m'     # begin bold
+export LESS_TERMCAP_md=$'\e[1;37m'     # begin blink
+export LESS_TERMCAP_so=$'\e[1;37m'     # begin reverse video
+export LESS_TERMCAP_us=$'\e[1;33m'     # begin underline
+export LESS_TERMCAP_me=$'\e[0m'        # reset bold/blink
+export LESS_TERMCAP_se=$'\e[0m'        # reset reverse video
+export LESS_TERMCAP_ue=$'\e[0m'        # reset underline
+export GROFF_NO_SGR=1                  # for konsole and gnome-terminal
 
 # Path and manpages
-# Enable $DOTFILES binaries
-export PATH="${HOME}/dotfiles/bin:${PATH}"
+# Enable ~/bin
+export PATH="${HOME}/bin:${PATH}"
 # User manpages
 export MANPATH="/usr/local/man:${MANPATH}"
 
-# Optimize color output of macOS `ls`
-colorflag="-G"
-export LSCOLORS=gxfxbEaEBxxEhEhBaDaCaD
+# Optimize color output of macOS `ls` for Oceanic Next Dark
+# http://www.norbauer.com/rails-consulting/notes/ls-colors-and-terminal-app.html
+# For Linux:
+# di=1;32:ln=1;37:so=1;34:pi=1;36:ex=1;31:bd=1;32;47:cd=1;35:su=1;31;1;43:sg=1;31;1;43:tw=1;32;1;43:ow=1;32;41
+export colorflag="-G"
+export LSCOLORS="CxHxExGxBxChFxBDBDCDCb"
 
 # SSH keys
 export SSH_KEY_PATH="${HOME}/.ssh/rsa_id"
 
 # Set GPG env variable to allow apps use of GPG
-export GPG_TTY=$(tty)
+export GPG_TTY="$(tty)"
 
 # Homebrew options
 # Wait 2 weeks between `updating homebrew..`
-export HOMEBREW_AUTO_UPDATE_SECS=1209600
+export HOMEBREW_AUTO_UPDATE_SECS="1209600"

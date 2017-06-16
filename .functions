@@ -3,92 +3,93 @@
 
 # Create a new directory and enter it
 mkedir() {
-  mkdir -p "$@" && cd "$_"
+  mkdir -p "${@}" && cd "${_}"
 }
 
 # Change working directory to the top-most Finder window location
-cdf() { # short for `cdfinder`
+# Short for `cdfinder`
+cdf() {
   cd "$(osascript -e 'tell app "Finder" to POSIX path of (insertion location as alias)')"
 }
 
 # Create a .tar.gz archive, using `zopfli`, `pigz` or `gzip` for compression
 targz() {
-  local tmpFile="${@%/}.tar"
-  tar -cvf "${tmpFile}" --exclude=".DS_Store" "${@}" || return 1
+  local Tmpfile="${@%/}.tar"
+  tar -cvf "${Tmpfile}" --exclude=".DS_Store" "${@}" || return 1
 
-  size=$(
-    stat -f"%z" "${tmpFile}" 2> /dev/null # macOS `stat`
-    stat -c"%s" "${tmpFile}" 2> /dev/null # GNU `stat`
+  Size=$(
+    stat -f"%z" "${Tmpfile}" 2>/dev/null # macOS `stat`
+    stat -c"%s" "${Tmpfile}" 2>/dev/null # GNU `stat`
   );
 
   local cmd="";
-  if (( size < 52428800 )) && hash zopfli 2> /dev/null; then
+  if (( ${Size} < 52428800 )) && hash zopfli 2>/dev/null; then
     # the .tar file is smaller than 50 MB and Zopfli is available; use it
     cmd="zopfli"
   else
-    if hash pigz 2> /dev/null; then
+    if hash pigz 2>/dev/null; then
       cmd="pigz"
     else
       cmd="gzip"
     fi;
   fi;
 
-  echo "Compressing .tar ($((size / 1000)) kB) using \`${cmd}\`…"
-  "${cmd}" -v "${tmpFile}" || return 1
-  [ -f "${tmpFile}" ] && rm "${tmpFile}"
+  printf "Compressing .tar ($((size / 1000)) kB) using \`${cmd}\`…\n"
+  "${cmd}" -v "${Tmpfile}" || return 1
+  [ -f "${Tmpfile}" ] && rm "${Tmpfile}"
 
   zippedSize=$(
-    stat -f"%z" "${tmpFile}.gz" 2> /dev/null; # macOS `stat`
-    stat -c"%s" "${tmpFile}.gz" 2> /dev/null; # GNU `stat`
+    stat -f"%z" "${Tmpfile}.gz" 2>/dev/null; # macOS `stat`
+    stat -c"%s" "${Tmpfile}.gz" 2>/dev/null; # GNU `stat`
   );
 
-  echo "${tmpFile}.gz ($((zippedSize / 1000)) kB) created successfully."
+  printf "${Tmpfile}.gz ($((zippedSize / 1000)) kB) created successfully.\n"
 }
 
 # Compare original and gzipped file size
 gzcompare() {
-  local origsize=$(wc -c < "$1")
-  local gzipsize=$(gzip -c "$1" | wc -c)
-  local ratio=$(echo "$gzipsize * 100 / $origsize" | bc -l)
-  printf "orig: %d bytes\n" "$origsize"
-  printf "gzip: %d bytes (%2.2f%%)\n" "$gzipsize" "$ratio"
+  local origsize=$(wc -c < "${1}")
+  local gzipsize=$(gzip -c "${1}" | wc -c)
+  local ratio=$(printf "${gzipsize} * 100 / ${origsize}\n" | bc -l)
+  printf "orig: %d bytes\n" "${origsize}"
+  printf "gzip: %d bytes (%2.2f%%)\n" "${gzipsize}" "${ratio}"
 }
 
 # Determine size of a file or total size of a directory
-sizer() {
-  if du -b /dev/null > /dev/null 2>&1; then
+size() {
+  if du -b /dev/null >/dev/null 2>&1; then
     local arg=-sbh
   else
     local arg=-sh
   fi;
-  if [ -n "$@" ]; then
-    du $arg -- "$@"
+  if [ -n "${1}" ]; then
+    du ${arg} -- "${1}"
   else
-    du $arg .[^.]* ./*
+    du ${arg} .[^.]* ./*
   fi;
 }
 
 # Use Git’s colored diff when available
-hash git &>/dev/null;
+hash git >/dev/null 2>&1;
 if [ $? -eq 0 ]; then
   diff() {
-    git diff --no-index --color-words "$@"
+    git diff --no-index --color-words "${@}"
   }
 fi;
 
 # Create a data URL from a file
 dataurl() {
-  local mimeType=$(file -b --mime-type "$1")
+  local mimeType=$(file -b --mime-type "${1}")
   if [ "${mimeType}" = "text/"* ]; then
     mimeType="${mimeType};charset=utf-8"
   fi;
-  echo "data:${mimeType};base64,$(openssl base64 -in "$1" | tr -d '\n')"
+  printf "data:${mimeType};base64,$(openssl base64 -in "${1}" | tr -d '\n')\n"
 }
 
 # Create a git.io short URL
 gitio() {
   if [ -z "${1}" -o -z "${2}" ]; then
-    echo "Usage: \`gitio slug url\`"
+    printf "Usage: \`gitio slug url\`\n"
     return 1
   fi;
   curl -i https://git.io/ -F "url=${2}" -F "code=${1}"
@@ -124,27 +125,27 @@ json() {
   fi;
 }
 
-# UTF-8-encode a string of Unicode symbols
-ucode() {
-  printf "\\\x%s" $(printf "$@" | xxd -p -c1 -u)
+# Encode a Unicode character to its escape sequence
+uce() {
+  printf "\\\x%s" $(printf "${1}" | xxd -p -c1 -u)
   # print a newline unless we’re piping the output to another program
   if [ -t 1 ]; then
     printf "\n"
   fi;
 }
 
-# Decode \x{ABCD}-style Unicode escape sequences
-udecode() {
-  perl -e "binmode(STDOUT, ':utf8'); print \"$@\"";
+# Decode a Unicode escape sequence to its character
+ucd() {
+  perl -e "binmode(STDOUT, ':utf8'); print \"${1}\"";
   # print a newline unless we’re piping the output to another program
   if [ -t 1 ]; then
     printf "\n"
   fi;
 }
 
-# Get a character’s Unicode code point
-upoint() {
-  perl -e "use utf8; print sprintf('U+%04X', ord(\"$@\"))";
+# Get a character its Unicode code point
+ucp() {
+  perl -e "use utf8; print sprintf('U+%04X', ord(\"${1}\"))";
   # print a newline unless we’re piping the output to another program
   if [ -t 1 ]; then
     printf "\n"
@@ -157,7 +158,7 @@ s() {
   if [ $# -eq 0 ]; then
     subl .
   else
-    subl "$@"
+    subl "${@}"
   fi;
 }
 
@@ -167,7 +168,7 @@ a() {
   if [ $# -eq 0 ]; then
     atom .
   else
-    atom "$@"
+    atom "${@}"
   fi;
 }
 
@@ -177,7 +178,7 @@ v() {
   if [ $# -eq 0 ]; then
     vim .
   else
-    vim "$@"
+    vim "${@}"
   fi;
 }
 
@@ -187,7 +188,7 @@ c() {
   if [ $# -eq 0 ]; then
     code .
   else
-    code "$@"
+    code "${@}"
   fi;
 }
 
@@ -197,33 +198,111 @@ o() {
   if [ $# -eq 0 ]; then
     open .
   else
-    open "$@"
+    open "${@}"
   fi;
 }
 
-# `treez` is `tree` with hidden files and color enabled, ignoring
+# `trees` is `tree` with hidden files and color enabled, ignoring
 # the `.git` directory, listing directories first. The output gets piped into
 # `less` with options to preserve color and line numbers, unless the output is
 # small enough for one screen.
-treez() {
-  tree -aC -I '.git | node_modules | bower_components' --dirsfirst "$@" | less -FRNX
+trees() {
+  tree -aC -I '.git | node_modules | bower_components' --dirsfirst "${@}" | less -FRNX
 }
 
-# Get bundle name of an application
-# `bundleid "Keychain Access"`
+# Get updates for macOS, Homebrew, NPM, Ruby and their respective packages
+update() {
+  printf "Updated packages: "
+  ( sudo softwareupdate -i -a ) >/dev/null 2>&1
+  printf "macOS "
+  ( brew update && brew upgrade && brew cleanup ) >/dev/null 2>&1
+  printf "Homebrew "
+  ( npm install npm@latest -g && npm update -g && npm cache clean --force ) >/dev/null 2>&1
+  printf "Node "
+  ( sudo gem update --system && sudo gem update && sudo gem cleanup ) >/dev/null 2>&1
+  printf "Ruby\n"
+}
+
+# Easy volume manipulation
+volume() {
+  osascript \
+  -e 'on run(argv)' \
+    -e 'set volume output volume (item 1 of argv)' \
+  -e 'end run' "${1}"
+}
+
+# Get bundle name of an application like 'com.apple.Safari'
+# Example: bundleid "Keychain Access"
 bundleid() {
-  if [ "$(find "/Applications" -maxdepth 3 -name "${@}" -print -quit)" ] || [ "$(find "/System/Library/CoreServices" -maxdepth 2 -name "${@}.app" -print -quit)" ]; then
+  # Conditional is needed because non-existing apps will otherwise cause 'where is App located?' popups
+  if [ "$(find -L "/Applications" -maxdepth 3 -type d -name "${1}.app" -print -quit)" ] \
+  || [ "$(find -L "/System/Library/CoreServices" -maxdepth 2 -type d -name "${1}.app" -print -quit)" ]; then
     osascript \
       -e 'on run(argv)' \
         -e 'id of application (item 1 of argv)' \
-      -e 'end run' "${@}"
+      -e 'end run' "${1}"
   else
-    echo "Application '${@}' could not be located!"
+    printf "Application '${1}' could not be located!\n"
   fi;
 }
 
-# Shorten URLs with Tinyurl
+# Shorten URLs via Tinyurl
 # Other shorteners (goo.gl, bit.ly, ow.ly) all require API keys
 tinyurl() {
-  curl -s "http://tinyurl.com/api-create.php?url=$1" | pbcopy
+  curl -s "http://tinyurl.com/api-create.php?url=${1}" | pbcopy
+}
+
+# Reboot WRT routers via the terminal
+# Only works if your SSH key has been added to the router
+rbWRT() {
+  for IP in ${@}; do
+    ssh -o ConnectTimeout=5 "root@${IP}" 'reboot'
+  done;
+}
+
+# Open all Chrome tabs in Safari
+tabcosa() {
+  osascript \
+  -e 'tell application "Safari" to activate'
+  -e 'set list_Tabs to {}' \
+  -e 'tell application "Google Chrome"' \
+    -e 'set the_Tabs to (tabs of every window)' \
+    -e 'repeat with the_Tab in the_Tabs' \
+      -e 'set the_Items to (every item of the_Tab)' \
+      -e 'repeat with the_Item in the_Items' \
+        -e 'copy URL of the_Item to end of list_Tabs' \
+      -e 'end repeat' \
+    -e 'end repeat' \
+  -e 'end tell' \
+  -e 'tell application "Safari"' \
+    -e 'repeat with list_Tab in list_Tabs' \
+      -e 'set myTab to make new tab at end of tabs of window 1' \
+      -e 'set URL of myTab to list_Tab' \
+    -e 'end repeat' \
+  -e 'end tell'
+  -e 'tell application "System Events" to set visible of process "Google Chrome" to false'
+}
+
+# Open all Safari tabs in Chrome
+tabsaco() {
+  open -a "Google Chrome"
+  osascript \
+  -e 'tell application "Chrome" to activate'
+  -e 'set list_Tabs to {}' \
+  -e 'tell application "Safari"' \
+    -e 'set the_Tabs to (tabs of every window)' \
+    -e 'repeat with the_Tab in the_Tabs' \
+      -e 'set the_Items to (every item of the_Tab)' \
+      -e 'repeat with the_Item in the_Items' \
+        -e 'copy URL of the_Item to end of list_Tabs' \
+      -e 'end repeat' \
+    -e 'end repeat' \
+  -e 'end tell' \
+  -e 'tell application "Google Chrome"' \
+    -e 'repeat with list_Tab in list_Tabs' \
+      -e 'set myTab to make new tab at end of tabs of window 1' \
+      -e 'set URL of myTab to list_Tab' \
+    -e 'end repeat' \
+  -e 'end tell'
+  -e 'tell application "System Events" to set visible of process "Safari" to false'
 }

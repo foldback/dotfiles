@@ -1,0 +1,23 @@
+# Extra settings
+# Template, put your edited version in ~/
+
+# Git
+# Credentials
+GIT_AUTHOR_NAME="Your Name"
+GIT_COMMITTER_NAME="$GIT_AUTHOR_NAME"
+git config --global user.name "$GIT_AUTHOR_NAME"
+GIT_AUTHOR_EMAIL="yourname@yourprovider.com"
+GIT_COMMITTER_EMAIL="$GIT_AUTHOR_EMAIL"
+git config --global user.email "$GIT_AUTHOR_EMAIL"
+
+# Sign commits with GPG
+#git config --global user.signingkey "KEYHERE"
+#git config --global commit.gpgsign true
+
+# Change push strategy on machines with Git 1.8+
+# http://git.io/mMah-w.
+#git config --global push.default simple
+
+# Vim
+# Disable all plugins because I like my Vim minimal
+#export VIM_NO_EXTRA=1

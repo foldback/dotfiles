@@ -162,7 +162,7 @@
 
 [push]
 	# Use the Git 1.x.x default to avoid errors on machines with old Git
-	# installations. To use `simple` instead, add this to your `~/.extra` file:
+	# installations. To use `simple` instead, add this to your `~/.private` file:
 	# `git config --global push.default simple`. See http://git.io/mMah-w.
 	default = simple
 	# Make `git push` push relevant annotated tags when pushing branches out.

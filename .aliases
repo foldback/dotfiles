@@ -16,17 +16,16 @@ alias drp="cd ${HOME}/Dropbox"
 alias dtf="cd ${HOME}/dotfiles"
 alias prj="cd ${HOME}/projects"
 
-# List all files colorized in long format
-alias lsl="ls -lF ${colorflag}"
+# List all files, colorized
+# Appends / to dirs, * to execs, @ to symlinks
+alias ls="ls -AF ${colorflag}"
 
-# List all files colorized in long format, including dot files
-alias lsa="ls -laF ${colorflag}"
+# List all files, colorized, in long format
+# Appends / to dirs, * to execs, @ to symlinks
+alias lsl="ls -laF ${colorflag}"
 
 # List only directories
-alias lsd="ls -lF ${colorflag} | grep --color=never '^d'"
-
-# Always use color output for `ls`
-alias ls="command ls ${colorflag}"
+alias lsd="ls -F ${colorflag} | grep --color=never '^d'"
 
 # Always enable colored `grep` output
 # Note: `GREP_OPTIONS="--color=auto"` is deprecated, hence the alias usage.
@@ -38,25 +37,21 @@ alias egrep='egrep --color=auto'
 alias sudo='sudo '
 
 # Get week number
-alias week='date +%V'
+alias minical='date +"[M]%B [W]%V [D]%A [N]%d [T]%H:%M"'
 
 # Stopwatch
-alias timer='echo "Timer started. Stop with Ctrl-D."\
- && date && time cat && date'
-
-# Get macOS Software Updates, and update
-# Homebrew, NPM, Ruby and their respective packages
-alias update="sudo softwareupdate -i -a;\
- brew update; brew upgrade; brew cleanup;\
- sudo npm install npm -g; npm update -g; npm cache clean;\
- sudo gem update --system; sudo gem update; sudo gem cleanup"
+alias timer='printf "Timer started. Stop with Ctrl-D.\n" \
+&& date && time cat && date'
 
 # Google Chrome
 alias chrome="/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
 
 # IP addresses
+# External IP
 alias ip="dig +short myip.opendns.com @resolver1.opendns.com"
+# Local IP
 alias localip="ipconfig getifaddr en0"
+# All IPs
 alias ips="ifconfig -a | grep -o 'inet6\? \(addr:\)\
 \?\s\?\(\(\([0-9]\+\.\)\{3\}[0-9]\+\)\|[a-fA-F0-9:]\
 \+\)' | awk '{ sub(/inet6? (addr:)? ?/, \"\"); print }'"
@@ -78,7 +73,7 @@ alias httpdump="sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E\
  \"Host\: .*|GET \/.*\""
 
 # Canonical hex dump; some systems have this symlinked
-command -v hd >/dev/null || alias hxd="hexdump -C"
+command -v hxd >/dev/null || alias hxd="hexdump -C"
 
 # macOS has no `md5sum`, so use `md5` as a fallback
 command -v md5sum >/dev/null || alias md5sum="md5"
@@ -102,23 +97,23 @@ alias ds_clean="find . -type f -name '*.DS_Store' -ls -delete"
 # Clear Apple’s System Logs to improve shell startup speed.
 # Clear download history from quarantine.
 # https://goo.gl/Zz78p8
-alias emptytrash="sudo rm -Rfv /Volumes/*/.Trashes;\
- sudo rm -Rfv ${HOME}/.Trash;\
- sudo rm -Rfv /private/var/log/asl/*.asl;\
- sqlite3 ${HOME}/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV*\
- 'delete from LSQuarantineEvent'"
+alias emptytrash="sudo rm -Rfv /Volumes/*/.Trashes; \
+sudo rm -Rfv ${HOME}/.Trash; \
+sudo rm -Rfv /private/var/log/asl/*.asl; \
+sqlite3 ${HOME}/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV* \
+'delete from LSQuarantineEvent'"
 
 # Show/hide hidden files in Finder
-alias show="defaults write com.apple.finder AppleShowAllFiles -bool true &&\
- defaults write NSGlobalDomain AppleShowAllFiles -bool true && killall Finder"
-alias hide="defaults write com.apple.finder AppleShowAllFiles -bool false &&\
- defaults write NSGlobalDomain AppleShowAllFiles -bool false && killall Finder"
+alias show="defaults write com.apple.finder AppleShowAllFiles -bool true && \
+defaults write NSGlobalDomain AppleShowAllFiles -bool true && killall Finder"
+alias hide="defaults write com.apple.finder AppleShowAllFiles -bool false && \
+defaults write NSGlobalDomain AppleShowAllFiles -bool false && killall Finder"
 
 # show/hide all desktop icons (useful when presenting)
-alias showdsk="defaults write com.apple.finder CreateDesktop -bool true\
- && killall Finder"
-alias hidedsk="defaults write com.apple.finder CreateDesktop -bool false\
- && killall Finder"
+alias showdsk="defaults write com.apple.finder CreateDesktop -bool true \
+&& killall Finder"
+alias hidedsk="defaults write com.apple.finder CreateDesktop -bool false \
+&& killall Finder"
 
 # URL-encode strings
 alias urlencode='python -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1]);"'
@@ -146,10 +141,10 @@ alias badge="tput bel"
 
 # Intuitive map function
 # For example, to list all directories that contain a certain file:
-# find . -name .gitattributes | map dirname
+# find . -type f -name .gitattributes | map dirname
 alias map="xargs -n1"
 
-# One of @janmoesen’s ProTips™
+# Call requests directly instead of `lwp-request -m GET`
 for method in GET HEAD POST PUT DELETE TRACE OPTIONS; do
   alias "${method}"="lwp-request -m '${method}'"
 done
@@ -157,24 +152,25 @@ done
 # Make Grunt print stack traces by default
 command -v grunt > /dev/null && alias grunt="grunt --stack"
 
-# http://xkcd.com/530/
-alias stfu="osascript -e 'set volume output muted true'"
-alias pumpitup="osascript -e 'set volume output volume 100'"
-
 # Kill all the tabs in Chrome to free up memory
 # [C] explained: http://www.commandlinefu.com/commands/view/402/exclude-grep-from-your-grepped-output-of-ps-alias-included-in-description
-#alias chromekill="ps ux | grep '[C]hrome Helper --type=renderer' | \
-#grep -v extension-process | tr -s ' ' | cut -d ' ' -f2 | xargs kill"
+alias tabkill="ps ux | grep '[C]hrome Helper --type=renderer' | \
+grep -v extension-process | tr -s ' ' | cut -d ' ' -f2 | xargs kill"
 
 # Lock the screen (when going AFK)
-alias lockscr="/System/Library/CoreServices/Menu\ Extras/User.menu/\
-Contents/Resources/CGSession -suspend"
+# Just use `ctrl + shift + power`
+#alias lockscr="/System/Library/CoreServices/Menu Extras/User.menu/\
+#Contents/Resources/CGSession -suspend"
 
 # Reload the shell (i.e. invoke as a login shell)
 alias rldsh="exec ${SHELL} -l"
 
 # Print each PATH entry on a separate line
-alias path='echo -e ${PATH//:/\\n}'
+alias paths='printf "${PATH//:/\\n}\n"'
 
-# Empty trash, flush DNS, clean `open with..`, remove all `.DS_Store`, update everything
-alias consuela="emptytrash &; flushdns &; lscleanup &; ds_clean &; update &;" 1>/dev/null
+# Fix `Address book` wakelock
+alias fixAB='( pmset -g | grep "AddressBookSourceSync" && setopt rmstarsilent \
+&& rm -Rf "${HOME}/Library/Caches/com.apple.AddressBookSourceSync/"* &&
+rm -Rf "${HOME}/Library/Application Support/AddressBook/"* && \
+killall -0 "AddressBookSourceSync" && unsetopt rmstarsilent ) >/dev/null 2>&1 && \
+printf "Address Book caches cleaned!\n"'
