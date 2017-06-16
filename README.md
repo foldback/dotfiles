@@ -1,22 +1,21 @@
 ## Introduction
 
-These are my the scripts for my Declarative Dotfiles. I was tired of having to manually update my dotfile scripts if I had found a way to improve on whatever I was using. These scripts aim to change that:
-if you use 'ddfunlib' (Declarative Dotfiles Functions Library), you can largely just template one of the other scripts, replace the name, package name and paths, and 'ddfunlib' will take care of the rest.
-Does an app or situation calls for a different approach? All you have to do is replace 'baklink' with 'cplinkDir' or tweak your declared path, easy as pie :)
+These are my dotfiles, building on [Mathias Bynens](https://mathiasbynens.be/) his groundwork. Whilst his settings definitely are an improvement over the defaults in macOS, there was (and is!) still room for improvement.
 
 ## The scripts
 
-So far, the only scripts this repo contains are the apps and binaries that I use (or have used) in the past. My hope is that as more people start using this, the library and quality of scripts increases.
-A fun one to look at is apps/cloud.sh'. Its a good example of the power of making your dotfiles declarative. All you tell this script is the name of your cloud provider (Dropbox, Google Drive, Amazon Drive, etc.)
-and the package name on Homebrew, and it'll take care of installation, checking initialization of the folder after login, and your symlinks of choice. Want to switch provider? Just copy your files over to the new folder,
-tell the script your provider, and off it goes!
+About half of what people name dotfiles are actually mostly shell scripts. Hence, I've changed their extension appropiately.
+If you feel the need to run one of the scripts seperately, go ahead. I've made sure they can run indepedently of eachother, although Brew is required for the majority of them.
 
 ## Installation
 
-git clone "https://github.com/jorvi/declarativedotfiles.git" "${HOME}/dotfiles/scripts" inside your dotfiles repo. Check which scripts you want to use, and what structure/paths are expected.
-Most scripts already contain my personal configuration as a sort of template, so it should be pretty clear!
+git clone "https://github.com/jorvi/dotfiles.git" "\~/dotfiles" && git checkout "mac" && "\~/dotfiles/setup.sh"
 
-As the usual advice goes, forking this, studying it, and editing it to your specification is the way to. If you think of something nice, do make a pull request!
+If you want to use these dotfiles, you should first fork the repository, review the code, and remove things you don’t need or want. Don’t use these unless you know what they do. Use at your own risk!
+
+## Updates
+
+Updates happen as soon as you pull the latest commits from upstream, since everything is symlinked (if you ran setup.sh, that is). A restart may be required.
 
 ## Thanks to…
-The internet, countless manpages and #zsh on freenode (note: this script is mostly sh compatible!)
+The internet. These dotfiles are combined from snippets all over the web, although major props goes to Mathias Bynens for the head start.
