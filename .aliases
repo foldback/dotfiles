@@ -1,6 +1,7 @@
 # macOS
 # .aliases
 
+
 # Easier navigation: .., ..., ...., ....., ~ and -
 alias ..="cd .."
 alias ...="cd ../.."
@@ -37,14 +38,11 @@ alias egrep='egrep --color=auto'
 alias sudo='sudo '
 
 # Get week number
-alias minical='date +"[M]%B [W]%V [D]%A [N]%d [T]%H:%M"'
+alias calv='date +"[M]%B [W]%V [D]%A [N]%d [T]%H:%M"'
 
 # Stopwatch
 alias timer='printf "Timer started. Stop with Ctrl-D.\n" \
 && date && time cat && date'
-
-# Google Chrome
-alias chrome="/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
 
 # IP addresses
 # External IP
@@ -63,17 +61,17 @@ alias ifactive="ifconfig | pcregrep -M -o '^[^\t:]+:([^\n]|\n\t)*status: active'
 alias flushdns="dscacheutil -flushcache && killall -HUP mDNSResponder"
 
 # Clean up LaunchServices to remove duplicates in the “Open With” menu
-alias lscleanup="/System/Library/Frameworks/CoreServices.framework\
-/Frameworks/LaunchServices.framework/Support/lsregister -kill -r\
- -domain local -domain system -domain user && killall Finder"
+alias owcleanup="/System/Library/Frameworks/CoreServices.framework\
+/Frameworks/LaunchServices.framework/Support/lsregister -kill -r \
+-domain local -domain system -domain user && killall Finder"
 
 # View HTTP traffic
 alias sniff="sudo ngrep -d 'en1' -t '^(GET|POST) ' 'tcp and port 80'"
-alias httpdump="sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E\
- \"Host\: .*|GET \/.*\""
+alias httpdump="sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E \
+\"Host\: .*|GET \/.*\""
 
 # Canonical hex dump; some systems have this symlinked
-command -v hxd >/dev/null || alias hxd="hexdump -C"
+command -v hd >/dev/null || alias hd="hexdump -C"
 
 # macOS has no `md5sum`, so use `md5` as a fallback
 command -v md5sum >/dev/null || alias md5sum="md5"
@@ -82,26 +80,16 @@ command -v md5sum >/dev/null || alias md5sum="md5"
 command -v sha1sum >/dev/null || alias sha1sum="shasum"
 
 # JavaScriptCore REPL
-jscbin="/System/Library/Frameworks/JavaScriptCore.\
+Jscbin="/System/Library/Frameworks/JavaScriptCore.\
 framework/Versions/A/Resources/jsc";
-[ -e "${jscbin}" ] && alias jsc="${jscbin}";
-unset jscbin;
+[ -e "${Jscbin}" ] && alias jsc="${Jscbin}"
+unset Jscbin
 
 # Trim new lines and copy to clipboard
 alias ctn="tr -d '\n' | pbcopy"
 
 # Recursively delete `.DS_Store` files
 alias ds_clean="find . -type f -name '*.DS_Store' -ls -delete"
-
-# Empty the Trash on all mounted volumes
-# Clear Apple’s System Logs to improve shell startup speed.
-# Clear download history from quarantine.
-# https://goo.gl/Zz78p8
-alias emptytrash="sudo rm -Rfv /Volumes/*/.Trashes; \
-sudo rm -Rfv ${HOME}/.Trash; \
-sudo rm -Rfv /private/var/log/asl/*.asl; \
-sqlite3 ${HOME}/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV* \
-'delete from LSQuarantineEvent'"
 
 # Show/hide hidden files in Finder
 alias show="defaults write com.apple.finder AppleShowAllFiles -bool true && \
@@ -116,7 +104,7 @@ alias hidedsk="defaults write com.apple.finder CreateDesktop -bool false \
 && killall Finder"
 
 # URL-encode strings
-alias urlencode='python -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1]);"'
+alias urle='python -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1]);"'
 
 # Merge PDF files
 # Usage: `mergepdf -o output.pdf input{1,2,3}.pdf`
@@ -144,18 +132,13 @@ alias badge="tput bel"
 # find . -type f -name .gitattributes | map dirname
 alias map="xargs -n1"
 
-# Call requests directly instead of `lwp-request -m GET`
+# Call requests directly instead of i.e `lwp-request -m GET`
 for method in GET HEAD POST PUT DELETE TRACE OPTIONS; do
   alias "${method}"="lwp-request -m '${method}'"
-done
+done;
 
 # Make Grunt print stack traces by default
-command -v grunt > /dev/null && alias grunt="grunt --stack"
-
-# Kill all the tabs in Chrome to free up memory
-# [C] explained: http://www.commandlinefu.com/commands/view/402/exclude-grep-from-your-grepped-output-of-ps-alias-included-in-description
-alias tabkill="ps ux | grep '[C]hrome Helper --type=renderer' | \
-grep -v extension-process | tr -s ' ' | cut -d ' ' -f2 | xargs kill"
+command -v grunt >/dev/null && alias grunt="grunt --stack"
 
 # Lock the screen (when going AFK)
 # Just use `ctrl + shift + power`
@@ -167,10 +150,3 @@ alias rldsh="exec ${SHELL} -l"
 
 # Print each PATH entry on a separate line
 alias paths='printf "${PATH//:/\\n}\n"'
-
-# Fix `Address book` wakelock
-alias fixAB='( pmset -g | grep "AddressBookSourceSync" && setopt rmstarsilent \
-&& rm -Rf "${HOME}/Library/Caches/com.apple.AddressBookSourceSync/"* &&
-rm -Rf "${HOME}/Library/Application Support/AddressBook/"* && \
-killall -0 "AddressBookSourceSync" && unsetopt rmstarsilent ) >/dev/null 2>&1 && \
-printf "Address Book caches cleaned!\n"'
