@@ -28,4 +28,4 @@ setopt HIST_IGNORE_DUPS
 setopt HIST_IGNORE_SPACE
 # Add timestamp for each entry
 # Sharing .shell_history with `bash` requires disabled timestamps
-#setopt EXTENDED_HISTORY
+unsetopt EXTENDED_HISTORY
