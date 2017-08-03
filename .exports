@@ -2,10 +2,10 @@
 # .exports
 
 # Explicitly set $TERM
-if [ "${COLORTERM}" = "gnome-*" ] >/dev/null 2>&1 && [ "${TERM}" = "xterm" ] \
->/dev/null 2>&1 && [ "$(infocmp "gnome-256color")" ] >/dev/null 2>&1; then
+if [ "${COLORTERM}" = "gnome-*" ] && [ "${TERM}" = "xterm" ] && \
+  [ "$(infocmp "gnome-256color")" ]; then
   export TERM="gnome-256color"
-elif [ "$(infocmp "xterm-256color")" ] >/dev/null 2>&1; then
+elif [ "$(infocmp "xterm-256color")" ]; then
   export TERM="xterm-256color"
 fi;
 
@@ -16,6 +16,23 @@ else
   export EDITOR="vim"
 fi
 
+# SSH keys
+export SSH_KEY_PATH="${HOME}/.ssh/rsa_id"
+
+# Set GPG env variable to allow apps use of GPG
+export GPG_TTY="$(tty)"
+
+# Wait 2 weeks between `updating homebrew..`
+export HOMEBREW_AUTO_UPDATE_SECS="1209600"
+
+### Encoding ###
+# Make Python use UTF-8 encoding for output to stdin, stdout, and stderr.
+export PYTHONIOENCODING="UTF-8"
+# Prefer US English and use UTF-8.
+export LANG="en_US.UTF-8"
+export LC_ALL="en_US.UTF-8"
+
+### Node ###
 # Enable persistent REPL history for `node`.
 export NODE_REPL_HISTORY="${HOME}/.node_history"
 # Allow 32³ entries; the default is 1000.
@@ -23,22 +40,13 @@ export NODE_REPL_HISTORY_SIZE="32768"
 # Use sloppy mode by default, matching web browsers.
 export NODE_REPL_MODE="sloppy"
 
-# Make Python use UTF-8 encoding for output to stdin, stdout, and stderr.
-export PYTHONIOENCODING="UTF-8"
-
-# Prefer US English and use UTF-8.
-export LANG="en_US.UTF-8"
-export LC_ALL="en_US.UTF-8"
-
-# Awesome manpager
+### Manpager ###
 # Display %location in manpage
 # Use visual bell
 # https://stackoverflow.com/a/19871578/806798
 export MANPAGER='less -m -q +Gg'
-
 # No `less` history file
 LESSHISTFILE=-
-
 # Have `less` display colors
 # https://unix.stackexchange.com/a/329092
 export LESS_TERMCAP_mb=$'\e[1;31m'     # begin bold
@@ -48,27 +56,16 @@ export LESS_TERMCAP_us=$'\e[1;33m'     # begin underline
 export LESS_TERMCAP_me=$'\e[0m'        # reset bold/blink
 export LESS_TERMCAP_se=$'\e[0m'        # reset reverse video
 export LESS_TERMCAP_ue=$'\e[0m'        # reset underline
-export GROFF_NO_SGR=1                  # for konsole and gnome-terminal
+export GROFF_NO_SGR=1                  # for Konsole and Gnome-terminal
 
-# Path and manpages
+### Path and manpages ###
 # Enable ~/bin
 export PATH="${HOME}/bin:${PATH}"
 # User manpages
 export MANPATH="/usr/local/man:${MANPATH}"
 
-# Optimize color output of macOS `ls` for Oceanic Next Dark
-# http://www.norbauer.com/rails-consulting/notes/ls-colors-and-terminal-app.html
-# For Linux:
-# di=1;32:ln=1;37:so=1;34:pi=1;36:ex=1;31:bd=1;32;47:cd=1;35:su=1;31;1;43:sg=1;31;1;43:tw=1;32;1;43:ow=1;32;41
-export colorflag="-G"
+### ls ###
+# Optimize color output for Oceanic Next Dark theme
+# http://tinyurl.com/kb7xqnt
+# For Linux: di=1;32:ln=1;37:so=1;34:pi=1;36:ex=1;31:bd=1;32;47:cd=1;35:su=1;31;1;43:sg=1;31;1;43:tw=1;32;1;43:ow=1;32;41
 export LSCOLORS="CxHxExGxBxChFxBDBDCDCb"
-
-# SSH keys
-export SSH_KEY_PATH="${HOME}/.ssh/rsa_id"
-
-# Set GPG env variable to allow apps use of GPG
-export GPG_TTY="$(tty)"
-
-# Homebrew options
-# Wait 2 weeks between `updating homebrew..`
-export HOMEBREW_AUTO_UPDATE_SECS="1209600"

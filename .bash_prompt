@@ -1,7 +1,6 @@
+#!/usr/bin/env bash
 # .bash_prompt
-
 # Shell prompt based on the Oceanic Next Dark theme.
-# iTerm → Profiles → Text → use 13pt Monaco with 1.1 vertical spacing.
 
 prompt_git() {
   local s='';
@@ -56,16 +55,16 @@ prompt_git() {
 # Colors
 bold='';
 reset="\e[0m";
-black="\e[1;30m";
-blue="\e[1;34m";
-cyan="\e[1;36m";
-green="\e[1;32m";
-orange="\e[1;33m";
-purple="\e[1;35m";
-red="\e[1;31m";
-violet="\e[1;35m";
-white="\e[1;37m";
-yellow="\e[1;33m";
+black="\e[0;30m";
+blue="\e[0;34m";
+cyan="\e[0;36m";
+green="\e[0;32m";
+orange="\e[0;33m";
+purple="\e[0;35m";
+red="\e[0;31m";
+violet="\e[0;35m";
+white="\e[0;39m";
+yellow="\e[0;33m";
 
 # Highlight the user name when logged in as root.
 if [[ "${USER}" == "root" ]]; then

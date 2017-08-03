@@ -1,0 +1,7 @@
+// GitGutter Settings - User
+{
+  "status_bar_text": [
+  "{{branch}}: {{state}}"
+],
+"theme": "Bars.gitgutter-theme"
+}

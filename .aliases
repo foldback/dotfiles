@@ -19,14 +19,14 @@ alias prj="cd ${HOME}/projects"
 
 # List all files, colorized
 # Appends / to dirs, * to execs, @ to symlinks
-alias ls="ls -AF ${colorflag}"
+alias ls="ls -A -F -G"
 
 # List all files, colorized, in long format
 # Appends / to dirs, * to execs, @ to symlinks
-alias lsl="ls -laF ${colorflag}"
+alias lsl="ls -l -a -F -G"
 
 # List only directories
-alias lsd="ls -F ${colorflag} | grep --color=never '^d'"
+alias lsd="ls -d -F -G *"
 
 # Always enable colored `grep` output
 # Note: `GREP_OPTIONS="--color=auto"` is deprecated, hence the alias usage.
@@ -34,10 +34,13 @@ alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 
-# Enable aliases to be sudo’ed
+# Enable aliases to be `sudo`ed
 alias sudo='sudo '
 
-# Get week number
+# Quickly repeat command with `sudo`
+alias sudor="sudo !!"
+
+# Verbose calendar
 alias calv='date +"[M]%B [W]%V [D]%A [N]%d [T]%H:%M"'
 
 # Stopwatch
@@ -58,26 +61,27 @@ alias ips="ifconfig -a | grep -o 'inet6\? \(addr:\)\
 alias ifactive="ifconfig | pcregrep -M -o '^[^\t:]+:([^\n]|\n\t)*status: active'"
 
 # Flush Directory Service & DNS cache
-alias flushdns="dscacheutil -flushcache && killall -HUP mDNSResponder"
+alias flushdns='dscacheutil -flushcache; killall -1 mDNSResponder 2>/dev/null; \
+printf "DNS cache flushed!\n"'
+
+# Renew DHCP lease
+alias renewdhcp='printf "add State:/Network/Interface/en0/RefreshConfiguration temporary\n" | \
+sudo scutil && ipconfig getpacket en0 1>/dev/null && \
+printf "DHCP lease renewed!\n" || printf "Renewing DHCP lease failed!\n"'
 
 # Clean up LaunchServices to remove duplicates in the “Open With” menu
-alias owcleanup="/System/Library/Frameworks/CoreServices.framework\
+alias lscleanup="/System/Library/Frameworks/CoreServices.framework\
 /Frameworks/LaunchServices.framework/Support/lsregister -kill -r \
 -domain local -domain system -domain user && killall Finder"
 
-# View HTTP traffic
-alias sniff="sudo ngrep -d 'en1' -t '^(GET|POST) ' 'tcp and port 80'"
-alias httpdump="sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E \
-\"Host\: .*|GET \/.*\""
-
-# Canonical hex dump; some systems have this symlinked
-command -v hd >/dev/null || alias hd="hexdump -C"
+# Canonical `hexdump`; some systems have this symlinked
+hash "hd" 2>/dev/null || alias hd="hexdump -C"
 
 # macOS has no `md5sum`, so use `md5` as a fallback
-command -v md5sum >/dev/null || alias md5sum="md5"
+hash "md5sum" 2>/dev/null || alias md5sum="md5"
 
 # macOS has no `sha1sum`, so use `shasum` as a fallback
-command -v sha1sum >/dev/null || alias sha1sum="shasum"
+hash "sha1sum" 2>/dev/null || alias sha1sum="shasum"
 
 # JavaScriptCore REPL
 Jscbin="/System/Library/Frameworks/JavaScriptCore.\
@@ -88,16 +92,17 @@ unset Jscbin
 # Trim new lines and copy to clipboard
 alias ctn="tr -d '\n' | pbcopy"
 
-# Recursively delete `.DS_Store` files
-alias ds_clean="find . -type f -name '*.DS_Store' -ls -delete"
+# Recursively delete .DS_Store files
+alias ds_clean="find . -type f -name '*.DS_Store' -ls -delete 1>/dev/null && \
+printf '"'".DS_Store"'"' files deleted!\n' || printf 'Failed to delete .DS_Store files!\n'"
 
 # Show/hide hidden files in Finder
-alias show="defaults write com.apple.finder AppleShowAllFiles -bool true && \
+alias showf="defaults write com.apple.finder AppleShowAllFiles -bool true && \
 defaults write NSGlobalDomain AppleShowAllFiles -bool true && killall Finder"
-alias hide="defaults write com.apple.finder AppleShowAllFiles -bool false && \
+alias hidef="defaults write com.apple.finder AppleShowAllFiles -bool false && \
 defaults write NSGlobalDomain AppleShowAllFiles -bool false && killall Finder"
 
-# show/hide all desktop icons (useful when presenting)
+# Show/hide all desktop icons
 alias showdsk="defaults write com.apple.finder CreateDesktop -bool true \
 && killall Finder"
 alias hidedsk="defaults write com.apple.finder CreateDesktop -bool false \
@@ -116,37 +121,48 @@ alias spotoff="sudo mdutil -a -i off"
 # Enable Spotlight
 alias spoton="sudo mdutil -a -i on"
 
-# PlistBuddy alias, because sometimes `defaults` just doesn’t cut it
+# `PlistBuddy` alias, because sometimes `defaults` just doesn’t cut it
 alias plistbuddy="/usr/libexec/PlistBuddy"
 
-# Airport CLI alias
+# `airport` CLI alias
 alias airport='/System/Library/PrivateFrameworks/Apple80211.framework/\
 Versions/Current/Resources/airport'
 
-# Ring the terminal bell, and put a badge on Terminal.app’s Dock icon
+# Ring the terminal bell, and put a badge on Terminal.app Dock icon
 # (useful when executing time-consuming commands)
 alias badge="tput bel"
 
-# Intuitive map function
+# Intuitive `map` function
 # For example, to list all directories that contain a certain file:
 # find . -type f -name .gitattributes | map dirname
 alias map="xargs -n1"
 
-# Call requests directly instead of i.e `lwp-request -m GET`
+# Call HTTP requests directly instead of e.g. `lwp-request -m GET`
 for method in GET HEAD POST PUT DELETE TRACE OPTIONS; do
   alias "${method}"="lwp-request -m '${method}'"
 done;
 
-# Make Grunt print stack traces by default
-command -v grunt >/dev/null && alias grunt="grunt --stack"
+# Make `grunt` print stack traces by default
+hash grunt 2>/dev/null && alias grunt="grunt --stack"
 
-# Lock the screen (when going AFK)
-# Just use `ctrl + shift + power`
-#alias lockscr="/System/Library/CoreServices/Menu Extras/User.menu/\
-#Contents/Resources/CGSession -suspend"
+# Suspend user
+alias suspu='/System/Library/CoreServices/Menu\ Extras/User.menu/\
+Contents/Resources/CGSession -suspend'
+
+# Print battery percentage
+alias btp='pmset -g batt | egrep "([0-9]+\%).*" -o --colour=auto | cut -f1 -d";"'
 
 # Reload the shell (i.e. invoke as a login shell)
 alias rldsh="exec ${SHELL} -l"
 
-# Print each PATH entry on a separate line
+# Print each `PATH` entry on a separate line
 alias paths='printf "${PATH//:/\\n}\n"'
+
+# When there's time to kill..
+alias starwars='telnet "towel.blinkenlights.nl"'
+
+# `pbcopy` and `pbpaste` on Linux
+# `STDOUT` redirection to prevent `tmux` stall
+# https://askubuntu.com/a/898094
+#alias pbcopy='xclip -selection clipboard 1>/dev/null'
+#alias pbpaste='xclip -selection clipboard -o 1>/dev/null'
