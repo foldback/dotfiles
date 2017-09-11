@@ -40,6 +40,6 @@ setopt EXTENDED_HISTORY
 # MARK_DIRS: append trailing '/' to directory names resulting from filename generation.
 # COMPLETE_ALIASES: Don't internally substitute alias before completion. Makes aliases a distinct command
 # MENU_COMPLETE: on ambiguous completion insert-cycle through options. This option overrides AUTO_MENU.
-for option in CORRECT CHECK_JOBS MARK_DIRS COMPLETE_ALIASES MENU_COMPLETE; do
+for option in CORRECT CHECK_JOBS MARK_DIRS MENU_COMPLETE; do
   setopt "${option}" 2>/dev/null
 done;
