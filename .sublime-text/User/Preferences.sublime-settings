@@ -27,7 +27,10 @@
 	"match_tags": true,
 	"open_files_in_new_window": false,
 	"overlay_scroll_bars": "enabled",
-	"rulers": [80],
+	"rulers":
+	[
+		80
+	],
 	"show_encoding": true,
 	"show_line_endings": true,
 	"tab_size": 2,
