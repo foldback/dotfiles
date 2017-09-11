@@ -134,6 +134,12 @@ sudo systemsetup -setrestartfreeze on
 # Never go into computer sleep mode
 #sudo systemsetup -setcomputersleep Off >/dev/null
 
+# Turn on SSH server
+sudo systemsetup -setremotelogin on
+
+# Turn on Wake-on-LAN access
+sudo systemsetup -setwakeonnetworkaccess on
+
 # Power button shows shutdown dialog instead of sleeping
 defaults write com.apple.loginwindow PowerButtonSleepsSystem -bool false
 
