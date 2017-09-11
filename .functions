@@ -295,7 +295,7 @@ ssh-cp-id() {
 rbwrt() {
   for IP in ${@}; do
     ssh -o PreferredAuthentications=publickey -o ConnectTimeout=5 \
-    "root@${IP}" 'shutdown -r now'
+    "root@${IP}" 'reboot'
   done;
 }
 
@@ -495,7 +495,7 @@ httpdump() {
 }
 
 # Dump Wi-Fi traffic
-# `wifisniff 6` to dump channel 6
+# `wifidump 6` to dump channel 6
 wifidump() {
   local airport="/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport"
   while [ "${#}" -gt 0 ]; do
