@@ -158,6 +158,10 @@ alias rldsh="exec ${SHELL} -l"
 # Print each `PATH` entry on a separate line
 alias paths='printf "${PATH//:/\\n}\n"'
 
+# Transmission CLI client
+alias tsm='transmission-remote'
+alias tsd='transmission-daemon'
+
 # When there's time to kill..
 alias starwars='telnet "towel.blinkenlights.nl"'
 
