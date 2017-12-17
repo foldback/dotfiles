@@ -1,9 +1,9 @@
 # macOS
-# macos.sh
+# .macos
 # Turns macOS from bearable to brilliant
 
 
-# These settings are for macOS 10.12 (Sierra)
+# These settings are for macOS 10.13 (High Sierra)
 # Sourced from lots of places, Mathias Bynens in particular
 
 # Close any open System Preferences panes, to prevent them from overriding
@@ -14,26 +14,27 @@ osascript -e 'tell application "System Preferences" to quit'
 if [ ! "${UID}" = 0 ]; then
   sudo -v
 fi;
+
 # Keep-alive: update existing `sudo` until script has finished
 while true; do
   sudo -n true
   sleep 60
-  kill -0 "${$}" || return
-done; &
+  kill -0 "${$}" || exit;
+done 2>/dev/null &
 
 ###############################################################################
 # General UI/UX
 ###############################################################################
 
 # Set computer name (as done via System Preferences → Sharing)
-#COMPUTER_NAME="Mars"
-#sudo scutil --set ComputerName "${COMPUTER_NAME}"
-#sudo scutil --set HostName "${COMPUTER_NAME}"
-#sudo scutil --set LocalHostName "${COMPUTER_NAME}"
-#sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string "${COMPUTER_NAME}"
-#unset COMPUTER_NAME
+COMPUTER_NAME="Mars"
+sudo scutil --set ComputerName "${COMPUTER_NAME}"
+sudo scutil --set HostName "${COMPUTER_NAME}"
+sudo scutil --set LocalHostName "${COMPUTER_NAME}"
+sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string "${COMPUTER_NAME}"
+unset COMPUTER_NAME
 
-# Set standby delay to 24 hours (default is 1 hour)
+# Set standby delay to 24 hours
 #sudo pmset -a standbydelay 86400
 
 # Disable the sound effects on boot
@@ -46,17 +47,17 @@ done; &
 #defaults write com.apple.universalaccess reduceTransparency -bool true
 
 # Menu bar: hide the Time Machine, Bluetooth and User icons
-defaults -currentHost write dontAutoLoad -array \
-  "/System/Library/CoreServices/Menu Extras/Bluetooth.menu" \
-  "/System/Library/CoreServices/Menu Extras/TimeMachine.menu" \
-  "/System/Library/CoreServices/Menu Extras/User.menu"
+#defaults -currentHost write dontAutoLoad -array \
+#  "/System/Library/CoreServices/Menu Extras/Bluetooth.menu" \
+#  "/System/Library/CoreServices/Menu Extras/TimeMachine.menu" \
+#  "/System/Library/CoreServices/Menu Extras/User.menu"
 
 # Load icons in this order: Clock, Battery, Airport, Volume
-defaults write com.apple.systemuiserver menuExtras -array \
-  "/System/Library/CoreServices/Menu Extras/Volume.menu" \
-  "/System/Library/CoreServices/Menu Extras/AirPort.menu" \
-  "/System/Library/CoreServices/Menu Extras/Battery.menu" \
-  "/System/Library/CoreServices/Menu Extras/Clock.menu"
+#defaults write com.apple.systemuiserver menuExtras -array \
+#  "/System/Library/CoreServices/Menu Extras/Volume.menu" \
+#  "/System/Library/CoreServices/Menu Extras/AirPort.menu" \
+#  "/System/Library/CoreServices/Menu Extras/Battery.menu" \
+#  "/System/Library/CoreServices/Menu Extras/Clock.menu"
 
 # Set the clock to only display the time
 defaults write com.apple.menuextra.clock DateFormat -string "HH:mm"
@@ -135,10 +136,10 @@ sudo systemsetup -setrestartfreeze on
 #sudo systemsetup -setcomputersleep Off >/dev/null
 
 # Turn on SSH server
-sudo systemsetup -setremotelogin on
+sudo systemsetup -setremotelogin on 1>/dev/null
 
 # Turn on Wake-on-LAN access
-sudo systemsetup -setwakeonnetworkaccess on
+sudo systemsetup -setwakeonnetworkaccess on 1>/dev/null
 
 # Power button shows shutdown dialog instead of sleeping
 defaults write com.apple.loginwindow PowerButtonSleepsSystem -bool false
@@ -157,16 +158,16 @@ defaults write com.apple.loginwindow PowerButtonSleepsSystem -bool false
 #defaults write com.apple.finder QLEnableTextSelection -bool true
 
 # Set the timezone; see `sudo systemsetup -listtimezones` for other values
-#sudo systemsetup -settimezone "Europe/Amsterdam" 1>dev/null
+#sudo systemsetup -settimezone "Europe/Amsterdam" 1>/dev/null
 
 # Sync with a pool of time servers instead of just one, increasing accuracy
 # 'pool.ntp.org' uses geographically close servers automatically
 # Also slightly increase privacy by not contacting Apple for time corrections
-sudo systemsetup -setusingnetworktime on
-sudo systemsetup -setnetworktimeserver "pool.ntp.org"
+sudo systemsetup -setusingnetworktime on 1>/dev/null
+sudo systemsetup -setnetworktimeserver "pool.ntp.org" 1>/dev/null
 
-# Change DNS servers to a combination of Google and OpenDNS
-networksetup -setdnsservers Wi-Fi "8.8.8.8" "8.8.4.4" "208.67.222.222" "208.67.220.220"
+# Change DNS servers to OpenDNS
+networksetup -setdnsservers Wi-Fi "208.67.222.222" "208.67.220.220"
 
 ###############################################################################
 # SSD-specific tweaks
@@ -202,24 +203,24 @@ defaults write NSGlobalDomain com.apple.mouse.tapBehavior -bool true
 
 # Force Touch-trackpads
 # Make clicks silent
-defaults write -currenthost com.apple.AppleMultitouchTrackpad ActuationStrength -bool false
-defaults write -currenthost com.apple.driver.AppleBluetoothMultitouch.trackpad -bool false
+defaults -currentHost write com.apple.AppleMultitouchTrackpad ActuationStrength -bool false
+defaults -currentHost write com.apple.driver.AppleBluetoothMultitouch.trackpad ActuationStrength -bool false
 # Medium pressure to register first click
 defaults write com.apple.AppleMultitouchTrackpad FirstClickThreshold -int 1
-defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad -int 0
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad FirstClickThreshold -int 0
 # Light cumulative pressure to register second level click
 defaults write com.apple.AppleMultitouchTrackpad SecondClickThreshold -int 0
-defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad -int 0
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad SecondClickThreshold -int 0
 
 # Three finger window drag and text selection (old screen dragging with four fingers)
-defaults write -currenthost com.apple.AppleMultitouchTrackpad TrackpadThreeFingerDrag -bool true
-defaults write -currenthost com.apple.AppleMultitouchTrackpad TrackpadThreeFingerHorizSwipeGesture -bool false
-defaults write -currenthost com.apple.AppleMultitouchTrackpad TrackpadThreeFingerTapGesture -bool false
-defaults write -currenthost com.apple.AppleMultitouchTrackpad TrackpadThreeFingerVertSwipeGesture -bool false
-defaults write -currenthost com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeFingerDrag -bool true
-defaults write -currenthost com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeFingerHorizSwipeGesture -bool false
-defaults write -currenthost com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeFingerTapGesture -bool false
-defaults write -currenthost com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeFingerVertSwipeGesture -bool false
+defaults -currentHost write com.apple.AppleMultitouchTrackpad TrackpadThreeFingerDrag -bool true
+defaults -currentHost write com.apple.AppleMultitouchTrackpad TrackpadThreeFingerHorizSwipeGesture -bool false
+defaults -currentHost write com.apple.AppleMultitouchTrackpad TrackpadThreeFingerTapGesture -bool false
+defaults -currentHost write com.apple.AppleMultitouchTrackpad TrackpadThreeFingerVertSwipeGesture -bool false
+defaults -currentHost write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeFingerDrag -bool true
+defaults -currentHost write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeFingerHorizSwipeGesture -bool false
+defaults -currentHost write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeFingerTapGesture -bool false
+defaults -currentHost write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeFingerVertSwipeGesture -bool false
 
 # Enable “natural” (smartphone-style) scrolling
 defaults write NSGlobalDomain com.apple.swipescrolldirection -bool true
@@ -264,19 +265,19 @@ defaults write NSGlobalDomain AppleMetricUnits -bool true
 sudo defaults write /Library/Preferences/com.apple.loginwindow showInputMenu -bool true
 
 # Enable automatic capitalization (disabling per individual app is more useful)
-defaults delete NSGlobalDomain NSAutomaticCapitalizationEnabled
+defaults delete NSGlobalDomain NSAutomaticCapitalizationEnabled 2>/dev/null
 
 # Enable smart dashes (disabling per individual app is more useful)
-defaults delete NSGlobalDomain NSAutomaticDashSubstitutionEnabled
+defaults delete NSGlobalDomain NSAutomaticDashSubstitutionEnabled 2>/dev/null
 
 # Enable automatic period substitution (disabling per individual app is more useful)
-defaults delete NSGlobalDomain NSAutomaticPeriodSubstitutionEnabled
+defaults delete NSGlobalDomain NSAutomaticPeriodSubstitutionEnabled 2>/dev/null
 
 # Enable smart quotes (disabling per individual app is more useful)
-defaults delete NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled
+defaults delete NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled 2>/dev/null
 
 # Enable auto-correct  (disabling per individual app is more useful)
-defaults delete NSGlobalDomain NSAutomaticSpellingCorrectionEnabled
+defaults delete NSGlobalDomain NSAutomaticSpellingCorrectionEnabled 2>/dev/null
 
 # Keep keyboard backlight on indefinitely
 # Value is in seconds
@@ -387,15 +388,17 @@ defaults write com.apple.finder OpenWindowForNewRemovableDisk -bool true
 /usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:arrangeBy string grid" "${HOME}/Library/Preferences/com.apple.finder.plist"
 /usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:arrangeBy string grid" "${HOME}/Library/Preferences/com.apple.finder.plist"
 
+# Correctly typing 'integer' results in 'Unrecognized Real Format' error
 # Increase grid spacing for icons on the desktop and in other icon views
-/usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:gridSpacing integer 95" "${HOME}/Library/Preferences/com.apple.finder.plist"
-/usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:gridSpacing integer 95" "${HOME}/Library/Preferences/com.apple.finder.plist"
-/usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:gridSpacing integer 95" "${HOME}/Library/Preferences/com.apple.finder.plist"
+/usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:gridSpacing 95" "${HOME}/Library/Preferences/com.apple.finder.plist"
+/usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:gridSpacing 95" "${HOME}/Library/Preferences/com.apple.finder.plist"
+/usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:gridSpacing 95" "${HOME}/Library/Preferences/com.apple.finder.plist"
 
+# Correctly typing 'integer' results in 'Unrecognized Real Format' error
 # Increase the size of icons on the desktop and in other icon views
-/usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:iconSize integer 80" "${HOME}/Library/Preferences/com.apple.finder.plist"
-/usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:iconSize integer 80" "${HOME}/Library/Preferences/com.apple.finder.plist"
-/usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:iconSize integer 80" "${HOME}/Library/Preferences/com.apple.finder.plist"
+/usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:iconSize 80" "${HOME}/Library/Preferences/com.apple.finder.plist"
+/usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:iconSize 80" "${HOME}/Library/Preferences/com.apple.finder.plist"
+/usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:iconSize 80" "${HOME}/Library/Preferences/com.apple.finder.plist"
 
 # Disable icon previews
 #/usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:showIconPreview bool false" "${HOME}/Library/Preferences/com.apple.finder.plist"
@@ -626,8 +629,8 @@ defaults write com.apple.Safari WebKitJavaScriptCanOpenWindowsAutomatically -boo
 defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2JavaScriptCanOpenWindowsAutomatically -bool false
 
 # Disable auto-playing video
-defaults write com.apple.Safari WebKitMediaPlaybackAllowsInline -bool false
-defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2AllowsInlineMediaPlayback -bool false
+defaults write com.apple.Safari WebKitMediaPlaybackAllowsInline -bool true
+defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2AllowsInlineMediaPlayback -bool true
 
 # Disable “Do Not Track”
 # Largely ignored by advertising networks and makes `fingerprinting` much easier
@@ -713,7 +716,7 @@ defaults write com.apple.spotlight orderedItems -array \
   '{"enabled" = 0;"name" = "MENU_SPOTLIGHT_SUGGESTIONS";}'
 
 # Load new settings before rebuilding the index
-killall mds 1>/dev/null
+killall mds 2> /dev/null
 # Make sure indexing is enabled for the main volume
 sudo mdutil -i on / 1>/dev/null
 # Rebuild the index from scratch
@@ -772,7 +775,7 @@ tell application "Terminal"
   (* Open the custom theme so that it gets added to the list
      of available terminal themes (note: this will open two
      additional terminal windows). *)
-  do shell script "open '${HOME}/dotfiles/resources/themes/" & themeName & ".terminal'"
+  do shell script "open '${HOME}/dotfiles/assets/themes/" & themeName & ".terminal'"
 
   (* Wait a little bit to ensure that the custom theme is added. *)
   delay 1
@@ -1031,5 +1034,5 @@ defaults write com.apple.messageshelper.MessageController SOInputLineSettings -d
 ################################END OF SCRIPT##################################
 
 
-printf "macOS configured!\n"
-printf "Restart to have all changes take effect!\n"
+printf "macOS configured :D!\n"
+printf "Reboot to have all changes take effect!\n"
