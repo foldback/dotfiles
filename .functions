@@ -110,6 +110,18 @@ trees() {
 ### Text & URLs ###
 ###################
 
+# Launch a DuckDuckGo search from the shell
+# `ddg 'fruity loops' or `ddg 'fruity loops' youtube` or `ddg 'fruity loops' yt`
+ddg() {
+  if [ ${#} -gt 1 ]; then
+    open "https://duckduckgo.com/?q=${1}"
+  elif [ ${#} -gt 2 ]; then
+    open "https://duckduckgo.com/?q=${1}\!${2}"
+  else
+    printf "Invalid input!\n"
+  fi;
+}
+
 # Shorten URLs via Tinyurl
 # Other shorteners all require CAPTCHA, API key or OAuth
 tinyurl() {
@@ -278,7 +290,7 @@ vol() {
 }
 
 # For Linux
-#sound() {
+#vol() {
 #  pactl set-sink-volume 0 "${1}%"
 #}
 
@@ -310,6 +322,17 @@ emptyall() {
   # Clear download history from quarantine
   sqlite3 ${HOME}/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV* \
   'delete from LSQuarantineEvent'
+}
+
+# Delete all '.DS_Store' files
+# Resets folder-specific UI preferences
+ds_clean() {
+  sudo find / -name ".DS_Store" -depth -exec rm {} \;
+}
+
+# Clean up duplicate 'open with' entries
+ls_clean() {
+  /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user
 }
 
 lockscr() {
