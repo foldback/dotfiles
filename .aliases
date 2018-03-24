@@ -92,10 +92,6 @@ unset Jscbin
 # Trim new lines and copy to clipboard
 alias ctn="tr -d '\n' | pbcopy"
 
-# Recursively delete .DS_Store files
-alias ds_clean="find . -type f -name '*.DS_Store' -ls -delete 1>/dev/null && \
-printf '"'".DS_Store"'"' files deleted!\n' || printf 'Failed to delete .DS_Store files!\n'"
-
 # Show/hide hidden files in Finder
 alias showfiles="defaults write com.apple.finder AppleShowAllFiles -bool true && \
 defaults write NSGlobalDomain AppleShowAllFiles -bool true && killall Finder"
