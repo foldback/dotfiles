@@ -107,6 +107,9 @@ alias hidedsk="defaults write com.apple.finder CreateDesktop -bool false \
 # URL-encode strings
 alias urle='python -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1]);"'
 
+# Test internet speed
+speedtest='echo "`curl --progress-bar -w "%{speed_download}" http://speedtest.wdc01.softlayer.com/downloads/test10.zip -o /dev/null` / 131072" | bc | xargs -I {} echo {} megabit'
+
 # Merge PDF files
 # Usage: `mergepdf -o output.pdf input{1,2,3}.pdf`
 alias mergepdf="/System/Library/Automator/Combine\ PDF\ \
