@@ -25,6 +25,9 @@ export GPG_TTY="$(tty)"
 # Wait 2 weeks between `updating homebrew..`
 export HOMEBREW_AUTO_UPDATE_SECS="1209600"
 
+# Set compilation flags
+export ARCHFLAGS="-arch x86_64"
+
 ### Encoding ###
 # Make Python use UTF-8 encoding for output to stdin, stdout, and stderr.
 export PYTHONIOENCODING="UTF-8"
