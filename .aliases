@@ -97,9 +97,9 @@ alias ds_clean="find . -type f -name '*.DS_Store' -ls -delete 1>/dev/null && \
 printf '"'".DS_Store"'"' files deleted!\n' || printf 'Failed to delete .DS_Store files!\n'"
 
 # Show/hide hidden files in Finder
-alias showf="defaults write com.apple.finder AppleShowAllFiles -bool true && \
+alias showfiles="defaults write com.apple.finder AppleShowAllFiles -bool true && \
 defaults write NSGlobalDomain AppleShowAllFiles -bool true && killall Finder"
-alias hidef="defaults write com.apple.finder AppleShowAllFiles -bool false && \
+alias hidefiles="defaults write com.apple.finder AppleShowAllFiles -bool false && \
 defaults write NSGlobalDomain AppleShowAllFiles -bool false && killall Finder"
 
 # Show/hide all desktop icons
